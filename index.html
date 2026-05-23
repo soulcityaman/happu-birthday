@@ -25,12 +25,12 @@
         height: 100%;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           Oxygen, Ubuntu, Cantarell, sans-serif;
-        /* Default background fallback, dynamically overridden by JS */
+        /* 🔹 Fallback background color with transition */
         background: radial-gradient(circle at top, #ffe6f0 0%, #f7d9e6 35%, #f2dfcc 100%);
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: align-items 0.25s ease, padding-top 0.25s ease, background 0.7s ease;
+        transition: align-items 0.25s ease, padding-top 0.25s ease, background 0.6s ease-in-out;
         /* 🔹 No page scroll, only player scrolls */
         overflow: hidden;
       }
@@ -49,12 +49,12 @@
 
       .player-container {
         /* 🔹 GLASS UI: iOS-style blur card */
-        background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.12) 40%, rgba(255, 255, 255, 0.06) 100%);
-        backdrop-filter: blur(22px) saturate(140%);
-        -webkit-backdrop-filter: blur(22px) saturate(140%);
+        background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.15) 40%, rgba(255, 255, 255, 0.08) 100%);
+        backdrop-filter: blur(25px) saturate(140%);
+        -webkit-backdrop-filter: blur(25px) saturate(140%);
         border-radius: 26px;
         padding: 20px 18px;
-        box-shadow: 0 22px 60px rgba(139, 30, 45, 0.25);
+        box-shadow: 0 22px 60px rgba(0, 0, 0, 0.15);
         text-align: center;
         border: 1px solid rgba(255, 255, 255, 0.6);
         width: 100%;
@@ -118,7 +118,7 @@
       /* 🔹 Album art play state effect */
       .album-art.is-playing {
         transform: scale(1.04);
-        box-shadow: 0 18px 40px rgba(139, 30, 45, 0.45);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
         border-color: rgba(255, 255, 255, 0.95);
       }
 
@@ -232,13 +232,15 @@
       .lyrics-section {
         margin-top: 10px;
         padding: 10px 8px;
-        background: rgba(255, 234, 241, 0.85);
+        background: rgba(255, 255, 255, 0.45);
+        backdrop-filter: blur(5px);
         border-radius: 16px;
         max-height: 150px;
         overflow-y: auto;
         overflow-x: hidden; /* no horizontal scroll */
         text-align: left;
         flex-shrink: 0;
+        border: 1px solid rgba(255, 255, 255, 0.3);
       }
 
       .lyrics-title {
@@ -311,7 +313,8 @@
       .why-section {
         margin-top: 8px;
         padding: 10px 10px 8px;
-        background: rgba(255, 255, 255, 0.85);
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(5px);
         border-radius: 16px;
         border: 1px dashed rgba(139, 30, 45, 0.35);
         text-align: left;
@@ -348,7 +351,7 @@
       .progress-bar {
         width: 100%;
         height: 6px;
-        background: rgba(245, 215, 223, 0.6);
+        background: rgba(255, 255, 255, 0.4);
         border-radius: 999px;
         cursor: pointer;
         position: relative;
@@ -400,15 +403,15 @@
         width: 34px;
         height: 34px;
         border-radius: 999px;
-        border: 1px solid #e2b7c3;
-        background: rgba(255, 247, 250, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        background: rgba(255, 247, 250, 0.7);
         font-size: 16px;
         color: #8b1e2d;
       }
 
       .prev-btn:hover,
       .next-btn:hover {
-        background: #ffe6ee;
+        background: rgba(255, 230, 238, 0.9);
         border-color: #d76389;
         transform: translateY(-1px);
       }
@@ -420,7 +423,7 @@
         background: radial-gradient(circle at 30% 20%, #ffdfeb, #c71e4c);
         color: #ffffff;
         font-size: 22px;
-        box-shadow: 0 6px 18px rgba(139, 30, 45, 0.45);
+        box-shadow: 0 6px 18px rgba(139, 30, 45, 0.3);
       }
 
       .play-btn:hover {
@@ -457,9 +460,9 @@
       body.feels-main-mode .player-container {
         text-align: left;
         background: radial-gradient(circle at top left,
-          rgba(255, 255, 255, 0.38) 0%,
-          rgba(255, 255, 255, 0.18) 35%,
-          rgba(255, 255, 255, 0.08) 100%);
+          rgba(255, 255, 255, 0.42) 0%,
+          rgba(255, 255, 255, 0.22) 35%,
+          rgba(255, 255, 255, 0.1) 100%);
       }
 
       body.lyrics-main-mode .top-row,
@@ -497,6 +500,8 @@
         flex: 1; /* take all middle space */
         margin-top: 18px;
         padding: 0;
+        border: none;
+        backdrop-filter: none;
       }
 
       body.lyrics-main-mode .lyrics-title {
@@ -530,6 +535,7 @@
         flex: 1;
         margin-top: 18px;
         padding: 0;
+        backdrop-filter: none;
       }
 
       body.feels-main-mode .why-title {
@@ -566,6 +572,7 @@
               id="albumArt"
               src="1.jpg"
               alt="Album artwork"
+              crossorigin="anonymous"
             />
           </div>
 
@@ -708,8 +715,7 @@
           title: "I Want To Hold Your Hand - Remastered 2015",
           artist: "The Beatles",
           src: "i-want-to-hold-your-hand-remastered-2015.mp3",
-          cover: "1.jpg", 
-          bgColor: "radial-gradient(circle at top, #ffe6f0 0%, #f7d9e6 35%, #f2dfcc 100%)", /* Soft original warm pink theme */
+          cover: "1.jpg", // 👈 album art
           synced: true,
           lyrics: [
             { time: 7.12, text: "Oh yeah, I'll tell you somethin'" },
@@ -756,7 +762,6 @@
           artist: "Elvis Presley",
           src: "Can-T-Help-Falling-In-Love.mp3",
           cover: "3.jpg",
-          bgColor: "radial-gradient(circle at top, #e3eeff 0%, #d2dfff 40%, #ebd7ff 100%)", /* Vintage/Classic dreamy blue & lavender tint */
           synced: false,
           lyrics: [
             "Wise men say",
@@ -789,7 +794,6 @@
           artist: "My Girl",
           src: "my-girl-shes-like-heaven-to-me.mp3",
           cover: "4.jpg",
-          bgColor: "radial-gradient(circle at top, #fff3d1 0%, #ffdca3 35%, #fcd0c7 100%)", /* Golden sunshine/heavenly yellow gradient */
           synced: false,
           lyrics: [
             "My girl",
@@ -860,7 +864,6 @@
           artist: "Taylor Swift",
           src: "love-story.mp3",
           cover: "5.jpg",
-          bgColor: "radial-gradient(circle at top, #fceed4 0%, #fccbc0 45%, #e1b3c4 100%)", /* Cinematic pastel fairytale/peach theme */
           synced: true,
           lyrics: [
             "[00:00.00]",
@@ -932,7 +935,6 @@
           artist: "Stephen Sanchez",
           src: "Until I Found You.mp3",
           cover: "IMG-20251129-WA0029.jpg",
-          bgColor: "radial-gradient(circle at top, #e8f5e9 0%, #c8e6c9 40%, #ffecb3 100%)", /* Vintage warmth, light green-sage/amber hues */
           synced: true,
           lyrics: [
             { time: 10.6, text: "Georgia, Wrap me up in all your..." },
@@ -1172,6 +1174,43 @@
         }
       }
 
+      /* 🔹 NEW: Dynamically extracts dominant colors from the thumbnail to build a matching gradient */
+      function updateAdaptiveBackground(imgElement) {
+        // Create an in-memory canvas to read image pixels
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        
+        // Wait until image is loaded to extract pixels safely
+        if (!imgElement.complete) {
+          imgElement.addEventListener('load', () => updateAdaptiveBackground(imgElement), { once: true });
+          return;
+        }
+
+        try {
+          // Scale down image inside canvas to make parsing incredibly fast
+          canvas.width = 10;
+          canvas.height = 10;
+          ctx.drawImage(imgElement, 0, 0, 10, 10);
+          
+          const imgData = ctx.getImageData(0, 0, 10, 10).data;
+          
+          // Sample a few distinct coordinates for top/center/bottom feel
+          // 4 pieces of data per pixel (R, G, B, A)
+          const formatRGB = (offset) => `rgb(${imgData[offset]}, ${imgData[offset+1]}, ${imgData[offset+2]})`;
+          
+          // Select corner and center points for smooth color mixing
+          const colorTop = formatRGB(0);       // Top Left
+          const colorMiddle = formatRGB(180);  // Center area 
+          const colorBottom = formatRGB(360);  // Lower area
+
+          // Apply gorgeous matching ambient gradient directly to body
+          document.body.style.background = `radial-gradient(circle at top, ${colorTop} 0%, ${colorMiddle} 50%, ${colorBottom} 100%)`;
+        } catch (e) {
+          console.warn("Could not extract image colors due to security/cross-origin constraints. Using aesthetic fallback gradient.", e);
+          document.body.style.background = "radial-gradient(circle at top, #ffe6f0 0%, #f7d9e6 35%, #f2dfcc 100%)";
+        }
+      }
+
       function loadSong(index) {
         currentIndex = index;
         const song = playlist[currentIndex];
@@ -1185,15 +1224,14 @@
           albumArt.src = song.cover;
           albumArt.alt = "Album art";
           albumArt.style.background = "";
+          
+          // 🔹 Fire dynamic background calculation on image update
+          updateAdaptiveBackground(albumArt);
         } else {
           albumArt.src = "";
           albumArt.alt = "Album art unavailable";
           albumArt.style.background = "linear-gradient(135deg, #8B1E2D, #C94A5A)";
-        }
-
-        // Dynamic background update matching the song art color scheme
-        if (song.bgColor) {
-          document.body.style.background = song.bgColor;
+          document.body.style.background = "radial-gradient(circle at top, #ffe6f0 0%, #f7d9e6 35%, #f2dfcc 100%)";
         }
 
         progressFill.style.width = "0%";
