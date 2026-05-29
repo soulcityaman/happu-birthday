@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Love Space</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --bg:#000000;
+    --card:rgba(255,255,255,0.08);
+    --border:rgba(255,255,255,0.12);
+    --text:#ffffff;
+    --soft:#d8c7ff;
+    --pink:#ff9ed6;
+    --purple:#9b6dff;
+    --glow:155,109,255;
+}
+
+body{
+    min-height:100vh;
+    overflow:hidden;
+    font-family:'Inter',sans-serif;
+    background:
+        radial-gradient(circle at top left, rgba(255,158,214,0.15), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(155,109,255,0.18), transparent 35%),
+        linear-gradient(135deg,#08050d 0%, #12091b 50%, #090511 100%);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+}
+
+/* dreamy background */
+
+.blur{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(90px);
+    opacity:.5;
+    pointer-events:none;
+}
+
+.blur1{
+    width:300px;
+    height:300px;
+    background:#ff8fd3;
+    top:-100px;
+    left:-60px;
+}
+
+.blur2{
+    width:350px;
+    height:350px;
+    background:#8d5dff;
+    bottom:-120px;
+    right:-100px;
+}
+
+.stars{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+}
+
+.star{
+    position:absolute;
+    width:3px;
+    height:3px;
+    border-radius:50%;
+    background:white;
+    opacity:.7;
+    animation:float 6s linear infinite;
+}
+
+@keyframes float{
+    0%{
+        transform:translateY(0px);
+        opacity:0;
+    }
+    30%{
+        opacity:1;
+    }
+    100%{
+        transform:translateY(-120px);
+        opacity:0;
+    }
+}
+
+.container{
+    width:min(1000px,100%);
+    z-index:10;
+}
+
+.top{
+    text-align:center;
+    margin-bottom:45px;
+}
+
+.top h1{
+    font-size:clamp(3rem,7vw,6rem);
+    font-family:'Playfair Display',serif;
+    font-weight:700;
+    background:linear-gradient(90deg,#fff,#ffd5ef,#c7b1ff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:12px;
+    letter-spacing:-2px;
+}
+
+.top p{
+    color:rgba(255,255,255,.72);
+    font-size:1.05rem;
+    font-weight:300;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:28px;
+}
+
+.card{
+    position:relative;
+    overflow:hidden;
+    min-height:300px;
+    border-radius:34px;
+    padding:28px;
+    cursor:pointer;
+
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.12);
+
+    backdrop-filter:blur(25px);
+    -webkit-backdrop-filter:blur(25px);
+
+    transition:
+        transform .35s ease,
+        box-shadow .35s ease,
+        border .35s ease;
+
+    isolation:isolate;
+}
+
+.card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.15),
+            rgba(255,255,255,0.03)
+        );
+    z-index:-2;
+}
+
+.card::after{
+    content:"";
+    position:absolute;
+    inset:-2px;
+    border-radius:inherit;
+    background:
+        radial-gradient(
+            600px circle at var(--x,50%) var(--y,50%),
+            rgba(var(--glow),0.35),
+            transparent 40%
+        );
+    opacity:0;
+    transition:opacity .3s ease;
+    z-index:-1;
+}
+
+.card:hover::after{
+    opacity:1;
+}
+
+.card:hover{
+    transform:
+        perspective(1200px)
+        rotateX(var(--rx,0deg))
+        rotateY(var(--ry,0deg))
+        translateY(-10px)
+        scale(1.02);
+
+    border:1px solid rgba(255,255,255,0.24);
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.45),
+        0 0 60px rgba(155,109,255,.15);
+}
+
+.card-content{
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+.tag{
+    align-self:flex-start;
+
+    padding:10px 18px;
+    border-radius:999px;
+
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.12);
+
+    color:#fff;
+    font-size:.78rem;
+    letter-spacing:.12em;
+    font-weight:600;
+
+    backdrop-filter:blur(12px);
+}
+
+.bottom{
+    margin-top:auto;
+}
+
+.title{
+    font-size:2.1rem;
+    font-weight:700;
+    margin-bottom:12px;
+    line-height:1.1;
+}
+
+.desc{
+    font-size:1rem;
+    line-height:1.7;
+    color:rgba(255,255,255,.75);
+    max-width:90%;
+}
+
+.icon{
+    position:absolute;
+    right:24px;
+    top:24px;
+    font-size:2rem;
+    opacity:.9;
+}
+
+.glow{
+    position:absolute;
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(255,255,255,.18), transparent 70%);
+    bottom:-80px;
+    right:-80px;
+    filter:blur(10px);
+}
+
+.videos{
+    background:
+        linear-gradient(rgba(15,10,25,.45), rgba(15,10,25,.7)),
+        url('14.png');
+    background-size:cover;
+    background-position:center;
+}
+
+.letters{
+    background:
+        linear-gradient(rgba(15,10,25,.45), rgba(15,10,25,.7)),
+        url('11.jpg');
+    background-size:cover;
+    background-position:center;
+}
+
+.playlist{
+    background:
+        linear-gradient(rgba(15,10,25,.45), rgba(15,10,25,.7)),
+        url('12.jpg');
+    background-size:cover;
+    background-position:center;
+}
+
+.memories{
+    background:
+        linear-gradient(rgba(15,10,25,.45), rgba(15,10,25,.7)),
+        url('13.png');
+    background-size:cover;
+    background-position:center;
+}
+
+.card:hover .title{
+    text-shadow:0 0 25px rgba(255,255,255,.25);
+}
+
+@media(max-width:900px){
+
+    body{
+        overflow:auto;
+        padding:50px 0;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .card{
+        min-height:260px;
+    }
+
+    .top{
+        margin-bottom:35px;
+    }
+
+    .title{
+        font-size:1.9rem;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="blur blur1"></div>
+<div class="blur blur2"></div>
+
+<div class="stars" id="stars"></div>
+
+<div class="container">
+
+    <div class="top">
+        <h1>Our Little Universe</h1>
+      
+    </div>
+
+    <div class="grid">
+
+        <div class="card videos" onclick="openPage('video.html')">
+
+            <div class="glow"></div>
+
+            <div class="card-content">
+
+                <div>
+                    <div class="tag">LOVIE FILMS</div>
+                    <div class="icon">汐</div>
+                </div>
+
+                <div class="bottom">
+                    <div class="title">Videos</div>
+
+                    <div class="desc">
+                        
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card letters" onclick="openPage('letters.html')">
+
+            <div class="glow"></div>
+
+            <div class="card-content">
+
+                <div>
+                    <div class="tag">LOVE NOTES</div>
+                    <div class="icon">柱</div>
+                </div>
+
+                <div class="bottom">
+                    <div class="title">Letters</div>
+
+                    <div class="desc">
+                        
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card playlist" onclick="openPage('music player.html')">
+
+            <div class="glow"></div>
+
+            <div class="card-content">
+
+                <div>
+                    <div class="tag">OUR SONGS</div>
+                    <div class="icon">而</div>
+                </div>
+
+                <div class="bottom">
+                    <div class="title">Playlist</div>
+
+                    <div class="desc">
+                       
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card memories" onclick="openPage('memories.html')">
+
+            <div class="glow"></div>
+
+            <div class="card-content">
+
+                <div>
+                    <div class="tag">PRECIOUS MOMENTS</div>
+                    <div class="icon">萄</div>
+                </div>
+
+                <div class="bottom">
+                    <div class="title">Memories</div>
+
+                    <div class="desc">
+                        
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* stars */
+
+const stars = document.getElementById('stars');
+
+for(let i=0;i<60;i++){
+
+    const star = document.createElement('div');
+
+    star.classList.add('star');
+
+    star.style.left = Math.random()*100 + '%';
+    star.style.top = Math.random()*100 + '%';
+
+    star.style.animationDuration =
+        (4 + Math.random()*6) + 's';
+
+    star.style.animationDelay =
+        Math.random()*5 + 's';
+
+    stars.appendChild(star);
+}
+
+/* premium hover */
+
+const cards = document.querySelectorAll('.card');
+
+cards.forEach(card=>{
+
+    card.addEventListener('mousemove',(e)=>{
+
+        const rect = card.getBoundingClientRect();
+
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        card.style.setProperty('--x', x + 'px');
+        card.style.setProperty('--y', y + 'px');
+
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateY = ((x - centerX) / centerX) * 7;
+        const rotateX = ((y - centerY) / centerY) * -7;
+
+        card.style.setProperty('--rx', rotateX + 'deg');
+        card.style.setProperty('--ry', rotateY + 'deg');
+    });
+
+    card.addEventListener('mouseleave',()=>{
+
+        card.style.setProperty('--rx','0deg');
+        card.style.setProperty('--ry','0deg');
+    });
+});
+
+/* page linking */
+
+function openPage(page){
+    window.location.href = page;
+}
+
+</script>
+
+</body>
+</html>

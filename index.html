@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>i love you</title>
+  <style>
+    /* Global Core Layout Base Foundations */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #040207;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* Interactive Fluid Layer Background Canvas */
+    #fluid-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 9999; 
+      pointer-events: none;
+    }
+
+    /* Modular State Router Viewport Panes */
+    .app-scene {
+      position: absolute;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.6s;
+    }
+    .app-scene.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none !important;
+    }
+
+    /* NEON ORBITAL PROGRESS RING CONFIGURATIONS */
+    .orbital-loader-wrapper {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .orbital-ring-svg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .orbital-track-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.04);
+      stroke-width: 4;
+    }
+
+    .orbital-track-fill {
+      fill: none;
+      stroke: var(--primary-neon, #e50914);
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-dasharray: 283;
+      stroke-dashoffset: 283;
+      filter: drop-shadow(0 0 10px var(--primary-neon, #e50914));
+      animation: orbitalProgressFill 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+    }
+
+    .orbital-outer-ticks {
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      border: 2.5px dashed var(--primary-neon, #e50914);
+      border-radius: 50%;
+      opacity: 0.25;
+      filter: drop-shadow(0 0 5px var(--primary-neon, #e50914));
+      animation: orbitalSpinClockwise 14s linear infinite;
+    }
+
+    .orbital-center-readout {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: monospace;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .orbital-percent-value {
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .orbital-status-label {
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 1px;
+    }
+
+    @keyframes orbitalSpinClockwise {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes orbitalProgressFill {
+      0% { stroke-dashoffset: 283; transform: rotate(-90deg); }
+      50% { stroke-dashoffset: 80; transform: rotate(30deg); }
+      100% { stroke-dashoffset: 20; transform: rotate(240deg); }
+    }
+
+    /* Screen-wide Transits Overlay Frame */
+    .global-scrim-loader {
+      position: fixed;
+      inset: 0;
+      background: #050308;
+      z-index: 999999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 25px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s;
+    }
+    .global-scrim-loader.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .loader-scrim-caption {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: rgba(255, 255, 255, 0.5);
+      font-weight: 700;
+    }
+
+    /* SCENE 1: INITIAL PASS-KEY AUTHORIZATION MATRIX GATE */
+    .auth-viewport {
+      display: grid;
+      place-items: center;
+      background: #040206;
+    }
+
+    .grid-motion-wrap {
+      position: absolute;
+      width: 160vw;
+      height: 160vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(-12deg);
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.12;
+    }
+
+    .grid-motion-matrix {
+      display: grid;
+      grid-template-rows: repeat(4, 1fr);
+      gap: 24px;
+      width: 100%;
+    }
+
+    .grid-motion-row {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 24px;
+      width: 100%;
+    }
+
+    @keyframes flowLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-20%); } }
+    @keyframes flowRight { 0% { transform: translateX(-20%); } 100% { transform: translateX(0); } }
+
+    .gm-row-even { animation: flowLeft 50s linear infinite; }
+    .gm-row-odd { animation: flowRight 50s linear infinite; }
+
+    .grid-motion-tile {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #0e0a16;
+    }
+
+    .grid-motion-img {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      filter: grayscale(0.8) contrast(1.1);
+    }
+
+    .auth-panel-card {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      background: rgba(12, 8, 18, 0.78);
+      backdrop-filter: blur(40px) saturate(130%);
+      -webkit-backdrop-filter: blur(40px) saturate(130%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 50px 36px;
+      box-sizing: border-box;
+      z-index: 5;
+      box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8);
+      text-align: center;
+    }
+
+    .auth-top-neon {
+      position: absolute;
+      top: -1px;
+      left: 15%;
+      width: 70%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #e50914, #ff3d47, transparent);
+    }
+
+    .auth-header-title {
+      margin: 0 0 8px 0;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .auth-header-desc {
+      margin: 0 0 35px 0;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.45);
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 15px 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      color: #ffffff;
+      font-size: 14px;
+      box-sizing: border-box;
+      transition: all 0.25s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: rgba(229, 9, 20, 0.6);
+      background: rgba(229, 9, 20, 0.02);
+      box-shadow: 0 0 14px rgba(229, 9, 20, 0.2);
+    }
+
+    .auth-action-btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      background: linear-gradient(135deg, #e50914, #b20710);
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(229, 9, 20, 0.25);
+    }
+
+    /* SCENE 2: IMMERSIVE FULLSCREEN DOME GALLERY PROFILES */
+    .dashboard-viewport {
+      background: #030204;
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .dashboard-foreground {
+      position: absolute; 
+      inset: 0;
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center;
+      z-index: 10; 
+      pointer-events: none; 
+      padding: 40px; 
+      box-sizing: border-box;
+    }
+
+    .selection-header { text-align: center; margin-bottom: 3rem; position: relative; z-index: 11; pointer-events: none;}
+    .selection-subtitle { color: rgba(154, 160, 180, 0.65); font-size: 11px; letter-spacing: 0.3em; font-weight: 700; text-transform: uppercase; margin: 0 0 10px 0; }
+    .selection-title { color: #ffffff; font-size: 3.5rem; font-weight: 800; letter-spacing: -0.02em; margin: 0; text-shadow: 0 0 40px rgba(0, 0, 0, 0.9); }
+    .cards-row-wrapper { display: flex; justify-content: center; align-items: center; gap: 3.5rem; position: relative; z-index: 11; pointer-events: auto;}
+
+    /* Profile Card Layout */
+    .profile-card {
+      position: relative; width: 280px; height: 380px; background-size: cover; background-position: center;
+      border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 40px 85px rgba(0, 0, 0, 0.55); pointer-events: auto; overflow: hidden;
+      transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .profile-card::after {
+      content: ''; position: absolute; inset: -20px; z-index: -1; opacity: 0; border-radius: 40px; filter: blur(35px); transition: opacity 0.4s ease;
+    }
+    .profile-male::after { background: radial-gradient(circle, rgba(0, 242, 254, 0.4) 0%, transparent 70%); }
+    .profile-girl::after { background: radial-gradient(circle, rgba(255, 117, 140, 0.35) 0%, transparent 70%); }
+
+    .profile-card:hover { transform: translateY(-10px) scale(1.02); border-color: rgba(255, 255, 255, 0.22); box-shadow: 0 50px 95px rgba(0, 0, 0, 0.75); }
+    .profile-card:hover::after { opacity: 1; }
+
+    .profile-inner-mesh {
+      width: 100%; height: 100%; padding: 2.5rem 1.8rem; box-sizing: border-box;
+      display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start; text-align: left;
+    }
+    .profile-male .profile-inner-mesh { background: linear-gradient(180deg, rgba(14, 24, 38, 0.15) 0%, rgba(8, 12, 18, 0.92) 100%); }
+    .profile-girl .profile-inner-mesh { background: linear-gradient(180deg, rgba(28, 16, 32, 0.1) 0%, rgba(12, 7, 15, 0.94) 100%); }
+
+    .profile-meta-tag { color: rgba(154, 163, 185, 0.75); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; margin-bottom: 0.3rem; }
+    .profile-identity-header { color: #ffffff; font-size: 2.3rem; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 1.2rem 0; }
+    .profile-access-trigger { background: transparent; border: none; padding: 0; font-size: 0.88rem; font-weight: 700; letter-spacing: 0.05em; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: transform 0.2s ease; }
+    
+    .profile-male .profile-access-trigger { color: #00f2fe; }
+    .profile-girl .profile-access-trigger { color: #ff758c; }
+    .profile-card:hover .profile-access-trigger { transform: translateX(5px); }
+
+    /* WORKING FULLSCREEN DOME GALLERY CALCULATIONS */
+    .sphere-root {
+      position: absolute; 
+      inset: 0; 
+      z-index: 1; 
+      pointer-events: auto;
+      width: 100%;
+      height: 100%;
+    }
+
+    main.sphere-main { 
+      position: absolute; 
+      inset: 0; 
+      display: grid; 
+      place-items: center; 
+      overflow: hidden; 
+      background: transparent; 
+    }
+
+    .stage { 
+      width: 1000px; 
+      height: 1000px; 
+      display: grid; 
+      place-items: center; 
+      perspective: 700px; 
+      perspective-origin: 50% 50%; 
+    }
+
+    .sphere { 
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      will-change: transform; 
+    }
+
+    .overlay, .overlay--blur { position: absolute; inset: 0; margin: auto; z-index: 3; pointer-events: none; }
+    .overlay { background-image: radial-gradient(rgba(3, 2, 4, 0.2) 30%, #030204 85%); }
+    .overlay--blur { -webkit-mask-image: radial-gradient(rgba(3, 2, 4, 0) 30%, #030204 80%); mask-image: radial-gradient(rgba(3, 2, 4, 0) 30%, #030204 80%); backdrop-filter: blur(6px); }
+
+    .item { 
+      position: absolute; 
+      left: 50%;
+      top: 50%;
+      width: 110px; 
+      height: 155px; 
+      margin-left: -55px;
+      margin-top: -77.5px;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+    }
+
+    .item__image { 
+      position: absolute; 
+      inset: 0; 
+      border-radius: 12px; 
+      border: 1px solid rgba(255, 255, 255, 0.05); 
+      background: #0d0a14; 
+      overflow: hidden; 
+      backface-visibility: hidden; 
+      transition: border-color 0.3s, box-shadow 0.3s; 
+    }
+    .item__image img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+      pointer-events: none; 
+      backface-visibility: hidden; 
+      filter: grayscale(0.5) brightness(0.4); 
+      transition: filter 0.3s ease, transform 0.3s ease;
+    }
+
+    .item__image:hover img { filter: grayscale(0.1) brightness(0.9); transform: scale(1.05); }
+    .item__image:hover { border-color: rgba(255, 255, 255, 0.25); box-shadow: 0 0 20px rgba(255,255,255,0.1); }
+
+    .dome-fade-edge { position: absolute; left: 0; right: 0; height: 220px; pointer-events: none; z-index: 4; }
+    .edge-t { top: 0; background: linear-gradient(to top, transparent, #030204); }
+    .edge-b { bottom: 0; background: linear-gradient(to bottom, transparent, #030204); }
+
+
+    
+/* BORDER GLOW COMPONENT */
+.border-glow-card {
+  --edge-proximity: 0;
+  --cursor-angle: 45deg;
+  --edge-sensitivity: 30;
+  --color-sensitivity: calc(var(--edge-sensitivity) + 20);
+  --border-radius: 28px;
+  --glow-padding: 40px;
+  --cone-spread: 25;
+  position: relative;
+  border-radius: var(--border-radius);
+  isolation: isolate;
+  transform: translate3d(0, 0, 0.01px);
+  display: grid;
+  border: 1px solid rgb(255 255 255 / 15%);
+  background: var(--card-bg, #120F17);
+  overflow: visible;
+}
+.border-glow-card::before,
+.border-glow-card::after,
+.border-glow-card > .edge-light {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  transition: opacity 0.25s ease-out;
+  z-index: -1;
+}
+.border-glow-card:not(:hover)::before,
+.border-glow-card:not(:hover)::after,
+.border-glow-card:not(:hover) > .edge-light {
+  opacity: 0;
+}
+.border-glow-card::before {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--card-bg, #120F17) 0 100%) padding-box,
+    radial-gradient(at 80% 55%, #c084fc 0px, transparent 50%) border-box,
+    radial-gradient(at 69% 34%, #f472b6 0px, transparent 50%) border-box,
+    radial-gradient(at 8% 6%, #38bdf8 0px, transparent 50%) border-box;
+  opacity: calc((var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity)));
+  mask-image:
+    conic-gradient(
+      from var(--cursor-angle) at center,
+      black calc(var(--cone-spread) * 1%),
+      transparent calc((var(--cone-spread) + 15) * 1%),
+      transparent calc((100 - var(--cone-spread) - 15) * 1%),
+      black calc((100 - var(--cone-spread)) * 1%)
+    );
+}
+.border-glow-card > .edge-light {
+  inset: calc(var(--glow-padding) * -1);
+  pointer-events: none;
+  z-index: 1;
+  mask-image:
+    conic-gradient(
+      from var(--cursor-angle) at center,
+      black 2.5%,
+      transparent 10%,
+      transparent 90%,
+      black 97.5%
+    );
+  opacity: calc((var(--edge-proximity) - var(--edge-sensitivity)) / (100 - var(--edge-sensitivity)));
+}
+.border-glow-card > .edge-light::before {
+  content: "";
+  position: absolute;
+  inset: var(--glow-padding);
+  border-radius: inherit;
+  box-shadow:
+    0 0 15px rgba(192,132,252,.45),
+    0 0 30px rgba(244,114,182,.35),
+    0 0 50px rgba(56,189,248,.25);
+}
+.border-glow-inner {
+  position: relative;
+  z-index: 2;
+  border-radius: inherit;
+}
+
+</style>
+</head>
+<body>
+
+  <canvas id="fluid-canvas"></canvas>
+
+  <div id="portal-scrim-loader" class="global-scrim-loader">
+    <div class="orbital-loader-wrapper">
+      <div class="orbital-outer-ticks"></div>
+      <svg class="orbital-ring-svg" viewBox="0 0 100 100">
+        <circle class="orbital-track-bg" cx="50" cy="50" r="45"></circle>
+        <circle id="portal-track-fill-node" class="orbital-track-fill" cx="50" cy="50" r="45"></circle>
+      </svg>
+      <div class="orbital-center-readout">
+        <div id="portal-readout-percent" class="orbital-percent-value">00%</div>
+        <div class="orbital-status-label">BUFF</div>
+      </div>
+    </div>
+    <div class="loader-scrim-caption" id="portal-scrim-caption-text">Syncing Platform Catalog Nodes...</div>
+  </div>
+
+  <div id="auth-scene" class="app-scene auth-viewport">
+    <div class="grid-motion-wrap"><div class="grid-motion-matrix" id="grid-motion-root"></div></div>
+    <div class="border-glow-card" style="--card-bg: rgba(12, 8, 18, 0.78);"><span class="edge-light"></span><div class="border-glow-inner"><div class="auth-panel-card">
+      <div class="auth-top-neon"></div>
+      <h2 class="auth-header-title">GUD-MISHRI</h2>
+      <p class="auth-header-desc">9 months done, 867 more to come</p>
+      <form id="auth-form">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="input-user" value="shreeja" required autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="input-pass" value="••••••••" required>
+        </div>
+        <button type="submit" class="auth-action-btn">LOGIN</button>
+      </form>
+    </div></div></div>
+  </div>
+
+  <div id="dashboard-scene" class="app-scene dashboard-viewport hidden">
+    <div class="sphere-root" id="dome-gallery-root">
+        <main class="sphere-main" id="dome-main-ref">
+            <div class="stage"><div class="sphere" id="dome-sphere-ref"></div></div>
+            <div class="overlay"></div>
+            <div class="overlay overlay--blur"></div>
+            <div class="dome-fade-edge edge-t"></div>
+            <div class="dome-fade-edge edge-b"></div>
+        </main>
+    </div>
+
+    <div class="dashboard-foreground">
+        <header class="selection-header">
+          <p class="selection-subtitle">LOGGED IN SUCCESSFULLY</p>
+          <h1 class="selection-title">Who's watching?</h1>
+        </header>
+        <div class="cards-row-wrapper">
+          <div class="border-glow-card" style="--border-radius:32px; background:transparent;"><span class="edge-light"></span><div class="border-glow-inner"><div class="profile-card profile-male" id="profile-node-aman" style="background-image: url('https://lh3.googleusercontent.com/d/1-mdp3PaZ3edn8eobFANbykRVBeeoUMtB');">
+            <div class="profile-inner-mesh">
+              <span class="profile-meta-tag">AMANDI</span>
+              <h3 class="profile-identity-header">AMAN</h3>
+              <button class="profile-access-trigger">LAUNCH GUD-MISHRI ➔</button>
+            </div>
+          </div></div></div>
+          <div class="border-glow-card" style="--border-radius:32px; background:transparent;"><span class="edge-light"></span><div class="border-glow-inner"><div class="profile-card profile-girl" id="profile-node-aura" style="background-image: url('https://lh3.googleusercontent.com/d/1nQdABzSL6GV0xbHhJmhww_t-3s3q7KZA');">
+            <div class="profile-inner-mesh">
+              <span class="profile-meta-tag">LOVIE</span>
+              <h3 class="profile-identity-header">SHREEJA</h3>
+              <button class="profile-access-trigger">LAUNCH GUD-MISHRI ➔</button>
+            </div>
+          </div></div></div>
+        </div>
+    </div>
+  </div>
+
+
+    </nav>
+
+    <div class="ws-main-scrollway" id="catalog-scrollway-container">
+      <section class="hero-billboard-container" id="hero-billboard-root" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop');">
+        <div class="hero-content-mesh">
+          <div class="hero-meta-badge"><span id="hero-badge-live-node">ORIGINAL</span> ULTRA PREVIEW MODE</div>
+          <h1 class="hero-main-title" id="hero-title-node">METROPOLIS CYBERPUNK INDEX</h1>
+          <p class="hero-synopsis-text" id="hero-desc-node">
+            Navigate multi-channel system directories. Switch parameters safely using our dynamic row catalog arrays beneath this viewport window layout.
+          </p>
+          <div class="hero-button-row">
+            <button class="hero-btn hero-btn-play" id="hero-action-play">
+                <svg viewBox="0 0 24 24" style="fill: currentColor; width: 18px; height: 18px;"><path d="M8 5v14l11-7z"/></svg>
+                Play Feature
+            </button>
+            <button class="hero-btn hero-btn-info" id="hero-action-info">System Info</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="search-empty-scrim" id="search-null-state-view">
+        <h3 class="search-empty-title">No results found</h3>
+        <p class="search-empty-desc">Your query didn't match any system tracks or directories. Check your spelling or try searching another media index key.</p>
+      </div>
+
+      <div class="catalog-section-block" id="catalog-slider-block-group">
+        <div class="rail-cluster-wrapper" id="rail-group-trending">
+          <h3 class="rail-headline-title">Trending Now</h3>
+          <div class="rail-viewport-slider" id="rail-trending-root"></div>
+        </div>
+        <div class="rail-cluster-wrapper" id="rail-group-continue">
+          <h3 class="rail-headline-title">Continue Watching</h3>
+          <div class="rail-viewport-slider" id="rail-continue-root"></div>
+        </div>
+        <div class="rail-cluster-wrapper" id="rail-group-releases">
+          <h3 class="rail-headline-title">New Releases</h3>
+          <div class="rail-viewport-slider" id="rail-releases-root"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lightbox-scrim" id="lightbox-root">
+    <div class="lightbox-frame">
+      <button class="lightbox-close" id="lightbox-close-btn">✕</button>
+      <div class="video-player-container" id="player-stage-node">
+        <video id="mock-premium-video" crossorigin="anonymous" preload="auto" playsinline></video>
+
+        <div id="player-internal-buffer" class="lightbox-internal-buffer-wrapper">
+          <div class="orbital-loader-wrapper" style="transform: scale(0.8);">
+            <div class="orbital-outer-ticks"></div>
+            <svg class="orbital-ring-svg" viewBox="0 0 100 100">
+              <circle class="orbital-track-bg" cx="50" cy="50" r="45"></circle>
+              <circle id="player-track-fill-node" class="orbital-track-fill" cx="50" cy="50" r="45"></circle>
+            </svg>
+            <div class="orbital-center-readout">
+              <div id="player-readout-percent" class="orbital-percent-value">00%</div>
+              <div class="orbital-status-label" style="font-size: 7px;">BUFF</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="player-pulse-glow"></div>
+        <div class="player-central-trigger" id="central-play-btn">
+          <svg viewBox="0 0 24 24" id="central-play-icon"><path d="M8 5v14l11-7z"/></svg>
+          <svg viewBox="0 0 24 24" id="central-pause-icon" style="display: none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </div>
+      </div>
+
+      <div class="player-controls-strip">
+        <div class="player-timeline-container">
+            <span class="player-current-time" id="player-time-current">0:00</span>
+            <div class="player-timeline-slider" id="player-timeline-slider">
+                <div class="player-timeline-progress" id="player-theme-progress-bar"></div>
+                <div class="player-timeline-handle" id="player-timeline-handle"></div>
+            </div>
+            <span class="player-total-time" id="player-time-total">0:00</span>
+        </div>
+
+        <div class="player-bottom-controls">
+            <div class="bottom-controls-left">
+                <button class="player-control-btn" id="btn-back-10" title="Rewind 10s">
+                    <svg viewBox="0 0 24 24"><path d="M12.5 13v-2.8l-2 1.4v1.4l2-1.4zm0 2.2V16H11v-3.8h1.5v3.2zm6.7-7.9c.5.5.8 1.1 1 1.7.2.6.3 1.2.3 1.9 0 1.9-.8 3.6-2.1 4.9S15.4 18 13.5 18H10v-1.5h3.5c1.1 0 2.1-.4 2.8-1.2.8-.8 1.2-1.7 1.2-2.8s-.4-2.1-1.2-2.8-1.7-1.2-2.8-1.2h-3v.8l1.4-2-1.4-2V6H12v2.2c1.9 0 3.6.8 4.9 2.1s2.1 3 2.1 4.9H19c0-1.5-.6-2.8-1.7-3.9s-2.4-1.7-3.9-1.7c-1.9 0-3.6.8-4.9 2.1s-2.1 3-2.1 4.9H6.5c0-1.9.8-3.6 2.1-4.9s3-2.1 4.9-2.1v2.2L12 6l1.5 2.2H12zm-8.8 4.6l-1 1V16h1.5v-1.1h1V16h1.5v-3.8H11l-.6 1zM11 13.2h.5l.5-.5.5.5v1.2l-1 1h.5z"></path></svg>
+                </button>
+                <button class="player-control-btn" id="btn-play-pause" title="Play / Pause">
+                    <svg viewBox="0 0 24 24" id="bottom-play-icon"><path d="M8 5v14l11-7z"/></svg>
+                    <svg viewBox="0 0 24 24" id="bottom-pause-icon" style="display: none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                </button>
+                <button class="player-control-btn" id="btn-forward-10" title="Forward 10s">
+                    <svg viewBox="0 0 24 24"><path d="M12.5 13v-2.8l-2 1.4v1.4l2-1.4zm0 2.2V16H11v-3.8h1.5v3.2zm6.7-7.9c.5.5.8 1.1 1 1.7.2.6.3 1.2.3 1.9 0 1.9-.8 3.6-2.1 4.9S15.4 18 13.5 18H10v-1.5h3.5c1.1 0 2.1-.4 2.8-1.2.8-.8 1.2-1.7 1.2-2.8s-.4-2.1-1.2-2.8-1.7-1.2-2.8-1.2h-3v.8l1.4-2-1.4-2V6H12v2.2c1.9 0 3.6.8 4.9 2.1s2.1 3 2.1 4.9H19c0-1.5-.6-2.8-1.7-3.9s-2.4-1.7-3.9-1.7c-1.9 0-3.6.8-4.9 2.1s-2.1 3-2.1 4.9H6.5c0-1.9.8-3.6 2.1-4.9s3-2.1 4.9-2.1v2.2L12 6l1.5 2.2H12zm-8.8 4.6l-1 1V16h1.5v-1.1h1V16h1.5v-3.8H11l-.6 1zM11 13.2h.5l.5-.5.5.5v1.2l-1 1h.5z" transform="scale(-1 1) translate(-24 0)"></path></svg>
+                </button>
+                <div class="volume-container">
+                    <button class="player-control-btn" id="btn-volume-toggle" title="Mute / Unmute">
+                        <svg viewBox="0 0 24 24" id="volume-high-icon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"></path></svg>
+                        <svg viewBox="0 0 24 24" id="volume-mute-icon" style="display: none;"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"></path></svg>
+                    </button>
+                    <div class="volume-slider" id="volume-slider">
+                        <div class="volume-progress" id="volume-progress"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="bottom-controls-right">
+                <span id="player-title-footer" style="color: rgba(255,255,255,0.4); font-family: monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">PREMIUM DECODING STREAM [AUTO: 4K HDR]</span>
+                <button class="player-control-btn" id="btn-fullscreen" title="Fullscreen">
+                    <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"></path></svg>
+                </button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // OPTIMIZED STABLE DATASETS 
+    let SELECTION_BACKGROUND_GALLERY = [
+      'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=500&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=500&auto=format&fit=crop'
+    ];
+
+    let DOME_TILES_IMAGES_POOL = [
+        'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=300&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1531545514256-b1400bc00f31?q=80&w=300&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=300&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=300&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=300&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=300&auto=format&fit=crop'
+    ];
+
+    const ULTRA_FLUID_H264_SRC = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
+    const ALT_FLUID_H264_SRC = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4";
+
+    let AMAN_CATALOG_DATA = [
+      { title: "CHROME MATRIX PROTOCOLS", desc: "A deep dive into high-load memory frameworks running in real-time grid systems.", match: "98% Match", duration: "1h 55m", progress: "85%", live: true, thumb: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=500&auto=format&fit=crop", videoSrc: ULTRA_FLUID_H264_SRC },
+      { title: "ORBITAL SPEED HORIZONS", desc: "Breaking telemetry layers across hyper-sonic network architecture paths.", match: "94% Match", duration: "1h 48m", progress: "40%", live: false, thumb: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=500&auto=format&fit=crop", videoSrc: ALT_FLUID_H264_SRC },
+      { title: "CYBERPUNK GRID MATRIX", desc: "Open source cinematic adventure analyzed inside local layout frameworks.", match: "99% Match", duration: "1h 33m", progress: "10%", live: false, thumb: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=500&auto=format&fit=crop", videoSrc: ULTRA_FLUID_H264_SRC },
+      { title: "SYNAPSE LINK VECTOR", desc: "Tracing spatial interaction telemetry fields dynamically with precision engines.", match: "89% Match", duration: "1h 35m", progress: "65%", live: true, thumb: "https://images.unsplash.com/photo-1515621061946-eff1c2a352bd?q=80&w=500&auto=format&fit=crop", videoSrc: ALT_FLUID_H264_SRC }
+    ];
+
+    let AURA_CATALOG_DATA = [
+      { title: "CELESTIAL SOUNDSCAPES", desc: "Immersive auditory frequencies bouncing off structural atmospheric geometry fields.", match: "99% Match", duration: "3h 12m", progress: "90%", live: false, thumb: "https://images.unsplash.com/photo-1538370965046-79c0d6907d47?q=80&w=500&auto=format&fit=crop", videoSrc: ALT_FLUID_H264_SRC },
+      { title: "PASTEL GALAXY CONSOLE", desc: "Artistic multi-dimensional space render nodes loaded inside local layout frameworks.", match: "95% Match", duration: "1h 55m", progress: "20%", live: true, thumb: "https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=500&auto=format&fit=crop", videoSrc: ULTRA_FLUID_H264_SRC },
+      { title: "AURORA INTERACTION PATHS", desc: "Luminous solar particles interacting dynamically with vector magnetic nodes.", match: "88% Match", duration: "1h 40m", progress: "5%", live: true, thumb: "https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?q=80&w=500&auto=format&fit=crop", videoSrc: ALT_FLUID_H264_SRC }
+    ];
+
+    // MODULE 1: DYNAMIC MOUSE FLUID LAYER CANVAS
+    const canvas = document.getElementById('fluid-canvas');
+    const ctx = canvas.getContext('2d');
+    let pointerTrails = [];
+    let cursorColorContext = { r: 229, g: 9, b: 20 };
+
+    function scaleCanvasLayout() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.addEventListener('resize', scaleCanvasLayout);
+    scaleCanvasLayout();
+
+    window.addEventListener('mousemove', (e) => {
+      pointerTrails.push({
+        x: e.clientX, y: e.clientY,
+        vx: (Math.random() - 0.5) * 2, vy: (Math.random() - 0.5) * 2,
+        radius: Math.random() * 10 + 12, alpha: 1.0,
+        rgbaTemplate: `rgba(${cursorColorContext.r}, ${cursorColorContext.g}, ${cursorColorContext.b}, `
+      });
+    });
+
+    function renderFluidFrameStep() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.globalCompositeOperation = 'screen';
+      for (let i = 0; i < pointerTrails.length; i++) {
+        const pt = pointerTrails[i];
+        pt.x += pt.vx; pt.y += pt.vy; pt.alpha -= 0.025; pt.radius += 0.2;
+        if (pt.alpha <= 0) { pointerTrails.splice(i, 1); i--; continue; }
+        const grad = ctx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, pt.radius);
+        grad.addColorStop(0, pt.rgbaTemplate + pt.alpha * 0.35 + ')');
+        grad.addColorStop(1, pt.rgbaTemplate + '0)');
+        ctx.beginPath(); ctx.fillStyle = grad; ctx.arc(pt.x, pt.y, pt.radius, 0, Math.PI * 2); ctx.fill();
+      }
+      requestAnimationFrame(renderFluidFrameStep);
+    }
+    renderFluidFrameStep();
+
+    // MODULE 2: GRIDMOTION SETUP PROTOCOLS
+    const gridContainerNode = document.getElementById('grid-motion-root');
+    function initGridMotionLayout() {
+      gridContainerNode.innerHTML = "";
+      for (let r = 0; r < 4; r++) {
+        const lineRow = document.createElement('div');
+        lineRow.className = `grid-motion-row ${r % 2 === 0 ? 'gm-row-even' : 'gm-row-odd'}`;
+        for (let c = 0; c < 8; c++) {
+          const tileNode = document.createElement('div');
+          tileNode.className = 'grid-motion-tile';
+          const innerImg = document.createElement('div');
+          innerImg.className = 'grid-motion-img';
+          innerImg.style.backgroundImage = `url(${SELECTION_BACKGROUND_GALLERY[(r * 8 + c) % SELECTION_BACKGROUND_GALLERY.length]})`;
+          tileNode.appendChild(innerImg); lineRow.appendChild(tileNode);
+        }
+        gridContainerNode.appendChild(lineRow);
+      }
+    }
+    initGridMotionLayout();
+
+    // MODULE 3: STATE VIEWPORT ROUTER 
+    const gateForm = document.getElementById('auth-form');
+    const sceneAuth = document.getElementById('auth-scene');
+    const sceneDash = document.getElementById('dashboard-scene');
+    const sceneWorkspace = document.getElementById('workspace-scene');
+
+    gateForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      sceneAuth.classList.add('hidden');
+      sceneDash.classList.remove('hidden');
+      buildDoomGallery();
+    });
+
+    // MODULE 4: REAL PREMIER VIDEO CONTROLS LOGIC GRID
+    const modalScrim = document.getElementById('lightbox-root');
+    const videoElement = document.getElementById('mock-premium-video');
+    const modalCloseTrigger = document.getElementById('lightbox-close-btn');
+    const internalBufferOverlay = document.getElementById('player-internal-buffer');
+    const internalBufferPercent = document.getElementById('player-readout-percent');
+    const footerTitle = document.getElementById('player-title-footer');
+
+    const timelineProgress = document.getElementById('player-theme-progress-bar');
+    const timelineHandle = document.getElementById('player-timeline-handle');
+    const timeCurrent = document.getElementById('player-time-current');
+    const timeTotal = document.getElementById('player-time-total');
+    const timelineSlider = document.getElementById('player-timeline-slider');
+
+    const btnPlayPause = document.getElementById('btn-play-pause');
+    const centralPlayBtn = document.getElementById('central-play-btn');
+    const playIcons = [document.getElementById('bottom-play-icon'), document.getElementById('central-play-icon')];
+    const pauseIcons = [document.getElementById('bottom-pause-icon'), document.getElementById('central-pause-icon')];
+
+    const btnBack10 = document.getElementById('btn-back-10');
+    const btnForward10 = document.getElementById('btn-forward-10');
+    
+    const btnVolumeToggle = document.getElementById('btn-volume-toggle');
+    const volumeHighIcon = document.getElementById('volume-high-icon');
+    const volumeMuteIcon = document.getElementById('volume-mute-icon');
+    const volumeSlider = document.getElementById('volume-slider');
+    const volumeProgress = document.getElementById('volume-progress');
+    const btnFullscreen = document.getElementById('btn-fullscreen');
+
+    let currentMediaTitle = "";
+
+    function formatTime(seconds) {
+        if (isNaN(seconds)) return "0:00";
+        let mins = Math.floor(seconds / 60);
+        let secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function triggerVideoPlayerModal(backdropUrl, titleStr, videoSrc) {
+      currentMediaTitle = titleStr;
+      footerTitle.textContent = `● LAUNCHING PREMIUM DECODER SYSTEM // ${titleStr.toUpperCase()}`;
+      
+      timelineProgress.style.backgroundColor = `rgba(${cursorColorContext.r}, ${cursorColorContext.g}, ${cursorColorContext.b}, 1)`;
+      timelineProgress.style.boxShadow = `0 0 10px rgba(${cursorColorContext.r}, ${cursorColorContext.g}, ${cursorColorContext.b}, 0.6)`;
+      timelineHandle.style.backgroundColor = `rgba(${cursorColorContext.r}, ${cursorColorContext.g}, ${cursorColorContext.b}, 1)`;
+
+      modalScrim.classList.add('active');
+      internalBufferOverlay.classList.remove('dismissed');
+      internalBufferPercent.textContent = "00%";
+      
+      videoElement.src = videoSrc;
+      videoElement.load();
+      resetPlayerControlsUI();
+
+      let bufferCount = 0;
+      let bufferInterval = setInterval(() => {
+        bufferCount += Math.floor(Math.random() * 22) + 8;
+        if(bufferCount >= 100) {
+          bufferCount = 100;
+          clearInterval(bufferInterval);
+          setTimeout(() => {
+            internalBufferOverlay.classList.add('dismissed');
+            videoElement.play().catch(err => console.log("Engine AutoPlay interrupted"));
+          }, 200);
+        }
+        internalBufferPercent.textContent = `${bufferCount.toString().padStart(2, '0')}%`;
+      }, 60);
+    }
+
+    function resetPlayerControlsUI() {
+        playIcons.forEach(i => i.style.display = 'block');
+        pauseIcons.forEach(i => i.style.display = 'none');
+        timelineProgress.style.width = "0%";
+        timelineHandle.style.left = "0%";
+        timeCurrent.textContent = "0:00";
+        timeTotal.textContent = "0:00";
+    }
+
+    function togglePlayPause() {
+        if (videoElement.paused) { videoElement.play(); } else { videoElement.pause(); }
+    }
+
+    btnPlayPause.addEventListener('click', togglePlayPause);
+    centralPlayBtn.addEventListener('click', togglePlayPause);
+    videoElement.addEventListener('click', togglePlayPause);
+
+    videoElement.addEventListener('play', () => {
+        playIcons.forEach(i => i.style.display = 'none');
+        pauseIcons.forEach(i => i.style.display = 'block');
+        footerTitle.textContent = `● DECODING STREAM TARGET [ACTIVE] // ${currentMediaTitle.toUpperCase()}`;
+    });
+    videoElement.addEventListener('pause', () => {
+        playIcons.forEach(i => i.style.display = 'block');
+        pauseIcons.forEach(i => i.style.display = 'none');
+        footerTitle.textContent = `● DECODING STREAM TARGET [PAUSED] // ${currentMediaTitle.toUpperCase()}`;
+    });
+
+    videoElement.addEventListener('loadedmetadata', () => { timeTotal.textContent = formatTime(videoElement.duration); });
+    videoElement.addEventListener('timeupdate', () => {
+        if (!videoElement.duration) return;
+        let percent = (videoElement.currentTime / videoElement.duration) * 100;
+        timelineProgress.style.width = `${percent}%`;
+        timelineHandle.style.left = `${percent}%`;
+        timeCurrent.textContent = formatTime(videoElement.currentTime);
+    });
+
+    timelineSlider.addEventListener('click', (e) => {
+        let rect = timelineSlider.getBoundingClientRect();
+        let seekPercent = (e.clientX - rect.left) / rect.width;
+        videoElement.currentTime = seekPercent * videoElement.duration;
+    });
+
+    btnBack10.addEventListener('click', () => videoElement.currentTime -= 10);
+    btnForward10.addEventListener('click', () => videoElement.currentTime += 10);
+
+    let lastVolume = 1;
+    function updateVolumeUI(volume) {
+        volumeProgress.style.width = `${volume * 100}%`;
+        if (volume === 0) {
+            volumeHighIcon.style.display = 'none';
+            volumeMuteIcon.style.display = 'block';
+        } else {
+            volumeHighIcon.style.display = 'block';
+            volumeMuteIcon.style.display = 'none';
+        }
+    }
+
+    btnVolumeToggle.addEventListener('click', () => {
+        if (videoElement.volume > 0) { lastVolume = videoElement.volume; videoElement.volume = 0; } 
+        else { videoElement.volume = lastVolume; }
+        updateVolumeUI(videoElement.volume);
+    });
+
+    volumeSlider.addEventListener('click', (e) => {
+        let rect = volumeSlider.getBoundingClientRect();
+        let volumeLevel = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        videoElement.volume = volumeLevel;
+        updateVolumeUI(volumeLevel);
+    });
+
+    btnFullscreen.addEventListener('click', () => {
+        if (!document.fullscreenElement) { document.getElementById('player-stage-node').requestFullscreen(); } 
+        else { document.exitFullscreen(); }
+    });
+
+    modalCloseTrigger.addEventListener('click', closeModal);
+    modalScrim.addEventListener('click', (e) => { if(e.target === modalScrim) closeModal(); });
+    
+    function closeModal() { modalScrim.classList.remove('active'); videoElement.pause(); videoElement.src = ""; }
+
+
+    // MODULE 5: PRODUCTION-READY FULLSCREEN DOOM SPHERICAL GALLERY
+    function buildDoomGallery() {
+        const sphereNode = document.getElementById('dome-sphere-ref');
+        sphereNode.innerHTML = "";
+
+        const radius = 480; // Optimal radius for a dramatic immersive curve
+        const rows = 5; 
+        const itemsPerRow = 16; 
+
+        // Generate perfect mathematical grid coordinate projections across a 3D hemisphere space
+        for (let r = 0; r < rows; r++) {
+            let latAngle = ((r - (rows - 1) / 2) * 22) * (Math.PI / 180); // Latitude angle distribution
+            
+            for (let i = 0; i < itemsPerRow; i++) {
+                let lonAngle = (i * (360 / itemsPerRow)) * (Math.PI / 180); // Longitude layout step
+
+                // Compute pristine 3D Spatial positions
+                let x = radius * Math.cos(latAngle) * Math.sin(lonAngle);
+                let y = radius * Math.sin(latAngle);
+                let z = radius * Math.cos(latAngle) * Math.cos(lonAngle);
+
+                // Compute exact inverse rotation directions so image faces the center matrix observer lookat
+                let rotY = (lonAngle * 180 / Math.PI);
+                let rotX = -(latAngle * 180 / Math.PI);
+
+                const imgThumb = DOME_TILES_IMAGES_POOL[(r * itemsPerRow + i) % DOME_TILES_IMAGES_POOL.length];
+                const itemNode = document.createElement('div');
+                itemNode.className = 'item';
+                
+                // Set native transform configurations matrix directly 
+                itemNode.style.transform = `translate3d(${x}px, ${y}px, ${z}px) rotateY(${rotY}deg) rotateX(${rotX}deg)`;
+
+                itemNode.innerHTML = `
+                    <div class="item__image" role="button">
+                        <img src="${imgThumb}" draggable="false" alt="Dome Asset Card Node" />
+                    </div>
+                `;
+                sphereNode.appendChild(itemNode);
+            }
+        }
+        initializeDoomGalleryInteractions();
+    }
+
+    function initializeDoomGalleryInteractions() {
+        const mainRef = document.getElementById('dome-main-ref');
+        const sphereRef = document.getElementById('dome-sphere-ref');
+        let rotation = { x: 0, y: 0 };
+        let isDragging = false;
+        let prevMousePos = { x: 0, y: 0 };
+        
+        const dragSensitivity = 0.15; 
+        const maxVerticalRotation = 25; // Constrain up-down limits to preserve profile alignment layout
+
+        mainRef.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            prevMousePos = { x: e.clientX, y: e.clientY };
+            mainRef.style.cursor = 'grabbing';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            let deltaX = e.clientX - prevMousePos.x;
+            let deltaY = e.clientY - prevMousePos.y;
+
+            rotation.y += deltaX * dragSensitivity;
+            rotation.x -= deltaY * dragSensitivity;
+
+            // Enforce safe viewing constraints
+            rotation.x = Math.min(Math.max(rotation.x, -maxVerticalRotation), maxVerticalRotation);
+
+            if (sphereRef) {
+                sphereRef.style.transform = `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`;
+            }
+
+            prevMousePos = { x: e.clientX, y: e.clientY };
+        });
+
+        window.addEventListener('mouseup', () => { 
+            isDragging = false; 
+            mainRef.style.cursor = 'default'; 
+        });
+    }
+
+    // MODULE 6: DYNAMIC CAROUSEL BUILD MATRIX SYSTEM
+    const railTrending = document.getElementById('rail-trending-root');
+    const railContinue = document.getElementById('rail-continue-root');
+    const railReleases = document.getElementById('rail-releases-root');
+    const heroBillboardRoot = document.getElementById('hero-billboard-root');
+    const heroTitleNode = document.getElementById('hero-title-node');
+    const heroDescNode = document.getElementById('hero-desc-node');
+    let activeHeroAsset = null;
+
+    function bindDragScrollingToSlider(sliderNode) {
+      let isDown = false, startX, scrollLeft;
+      sliderNode.addEventListener('mousedown', (e) => {
+        isDown = true; startX = e.pageX - sliderNode.offsetLeft; scrollLeft = sliderNode.scrollLeft;
+        sliderNode.style.cursor = 'grabbing';
+      });
+      sliderNode.addEventListener('mouseleave', () => { isDown = false; sliderNode.style.cursor = 'grab'; });
+      sliderNode.addEventListener('mouseup', () => { isDown = false; sliderNode.style.cursor = 'grab'; });
+      sliderNode.addEventListener('mousemove', (e) => {
+        if(!isDown) return; e.preventDefault();
+        const walk = (e.pageX - sliderNode.offsetLeft - startX) * 2; sliderNode.scrollLeft = scrollLeft - walk;
+      });
+    }
+
+    function createNetflixMediaCard(showData) {
+      const card = document.createElement('div');
+      card.className = 'media-stream-card';
+      card.setAttribute('data-title', showData.title.toUpperCase());
+      card.style.backgroundImage = `url('${showData.thumb}')`;
+      card.innerHTML = `
+        ${showData.live ? '<span class="media-card-live-badge">LIVE</span>' : ''}
+        <div class="media-card-scrim">
+          <h4 class="media-card-title">${showData.title}</h4>
+          <div class="media-card-row-data"><span class="media-card-neon-tag">${showData.match}</span><span>${showData.duration}</span></div>
+        </div>
+        <div class="media-progress-bar"><div class="media-progress-fill" style="width: ${showData.progress};"></div></div>
+      `;
+
+      card.addEventListener('mouseenter', () => {
+        heroBillboardRoot.style.backgroundImage = `url('${showData.thumb}')`;
+        heroTitleNode.textContent = showData.title;
+        heroDescNode.textContent = showData.desc;
+        activeHeroAsset = showData;
+      });
+
+      card.addEventListener('click', (e) => {
+        e.stopPropagation(); triggerVideoPlayerModal(showData.thumb, showData.title, showData.videoSrc);
+      });
+      return card;
+    }
+
+    function buildNetflixCatalogDashboard(catalogArray) {
+      railTrending.innerHTML = ''; railContinue.innerHTML = ''; railReleases.innerHTML = '';
+      if(!catalogArray || catalogArray.length === 0) return;
+
+      activeHeroAsset = catalogArray[0];
+      heroBillboardRoot.style.backgroundImage = `url('${activeHeroAsset.thumb}')`;
+      heroTitleNode.textContent = activeHeroAsset.title;
+      heroDescNode.textContent = activeHeroAsset.desc;
+
+      catalogArray.forEach(show => railTrending.appendChild(createNetflixMediaCard(show)));
+      [...catalogArray].reverse().forEach(show => railContinue.appendChild(createNetflixMediaCard(show)));
+      [...catalogArray].sort(() => 0.5 - Math.random()).forEach(show => railReleases.appendChild(createNetflixMediaCard(show)));
+
+      bindDragScrollingToSlider(railTrending);
+      bindDragScrollingToSlider(railContinue);
+      bindDragScrollingToSlider(railReleases);
+    }
+
+    // MODULE 7: REAL-TIME CATALOG ENGINE SEARCH DEPLOYMENT
+    const searchNode = document.getElementById('catalog-search-node');
+    const searchNullStateView = document.getElementById('search-null-state-view');
+    const catalogSliderBlockGroup = document.getElementById('catalog-slider-block-group');
+
+    searchNode.addEventListener('input', (e) => {
+      const query = e.target.value.trim().toUpperCase();
+      const allCards = document.querySelectorAll('.media-stream-card');
+      const rowSliders = [document.getElementById('rail-group-trending'), document.getElementById('rail-group-continue'), document.getElementById('rail-group-releases')];
+      
+      if (query === '') {
+        allCards.forEach(card => card.classList.remove('filtered-out'));
+        rowSliders.forEach(slider => slider.style.display = 'block');
+        searchNullStateView.classList.remove('active');
+        heroBillboardRoot.style.display = 'flex';
+        return;
+      }
+
+      let visibleCount = 0;
+
+      rowSliders.forEach(sliderRow => {
+        const matchingCardsInRow = sliderRow.querySelectorAll('.media-stream-card');
+        let activeInRow = 0;
+
+        matchingCardsInRow.forEach(card => {
+          const titleText = card.getAttribute('data-title') || '';
+          if (titleText.includes(query)) {
+            card.classList.remove('filtered-out');
+            activeInRow++;
+            visibleCount++;
+          } else {
+            card.classList.add('filtered-out');
+          }
+        });
+
+        if (activeInRow === 0) {
+          sliderRow.style.display = 'none';
+        } else {
+          sliderRow.style.display = 'block';
+        }
+      });
+
+      if (visibleCount === 0) {
+        searchNullStateView.classList.add('active');
+        heroBillboardRoot.style.display = 'none';
+      } else {
+        searchNullStateView.classList.remove('active');
+        heroBillboardRoot.style.display = 'flex';
+      }
+    });
+
+    // MODULE 8: PROFILE HUB INITIALIZER PROTOCOLS
+    const profileNodeAman = document.getElementById('profile-node-aman');
+    const profileNodeAura = document.getElementById('profile-node-aura');
+    const triggerReturn = document.getElementById('ws-return-trigger');
+    let globalActiveProfile = "aman";
+
+    function runSimulatedProfileTransitionalLoader(targetProfileType) {
+      const loaderScrim = document.getElementById('portal-scrim-loader');
+      const percentageText = document.getElementById('portal-readout-percent');
+      const captionText = document.getElementById('portal-scrim-caption-text');
+      
+      let accentColor = targetProfileType === 'aman' ? '#00f2fe' : '#ff758c';
+      document.documentElement.style.setProperty('--primary-neon', accentColor);
+      
+      captionText.textContent = `Syncing Profile Catalog Data for ${targetProfileType.toUpperCase()}...`;
+      loaderScrim.classList.add('active');
+      
+      let count = 0;
+      let interval = setInterval(() => {
+        count += Math.floor(Math.random() * 14) + 6;
+        if(count >= 100) {
+          count = 100; clearInterval(interval);
+          setTimeout(() => { loaderScrim.classList.remove('active'); executeActualProfileTransition(targetProfileType); }, 300);
+        }
+        percentageText.textContent = `${count.toString().padStart(2, '0')}%`;
+      }, 40);
+    }
+
+    function executeActualProfileTransition(profileTypeStr) {
+      globalActiveProfile = profileTypeStr;
+      searchNode.value = ''; 
+      searchNullStateView.classList.remove('active');
+      heroBillboardRoot.style.display = 'flex';
+      
+      sceneWorkspace.classList.remove('theme-cyan', 'theme-pink');
+      sceneDash.classList.add('hidden');
+      sceneWorkspace.classList.remove('hidden');
+
+      if (profileTypeStr === 'aman') {
+        sceneWorkspace.classList.add('theme-cyan');
+        document.getElementById('ws-brand-node').textContent = "A";
+        cursorColorContext = { r: 0, g: 242, b: 254 };
+        buildNetflixCatalogDashboard(AMAN_CATALOG_DATA);
+      } else {
+        sceneWorkspace.classList.add('theme-pink');
+        document.getElementById('ws-brand-node').textContent = "A";
+        cursorColorContext = { r: 255, g: 117, b: 140 };
+        buildNetflixCatalogDashboard(AURA_CATALOG_DATA);
+      }
+    }
+
+    profileNodeAman.addEventListener('click', () => runSimulatedProfileTransitionalLoader('aman'));
+    profileNodeAura.addEventListener('click', () => runSimulatedProfileTransitionalLoader('aura'));
+    
+    triggerReturn.addEventListener('click', () => {
+      sceneWorkspace.classList.add('hidden'); sceneDash.classList.remove('hidden');
+      cursorColorContext = { r: 229, g: 9, b: 20 };
+      document.documentElement.style.setProperty('--primary-neon', '#e50914');
+    });
+
+    document.getElementById('hero-action-play').addEventListener('click', () => {
+      if(activeHeroAsset) triggerVideoPlayerModal(activeHeroAsset.thumb, activeHeroAsset.title, activeHeroAsset.videoSrc);
+    });
+    document.getElementById('hero-action-info').addEventListener('click', () => {
+      if(activeHeroAsset) alert(`Asset Title: ${activeHeroAsset.title}\nMatch: ${activeHeroAsset.match}\nSynopsis: ${activeHeroAsset.desc}`);
+    });
+  
+function initBorderGlow(card) {
+  function getCenterOfElement(el) {
+    const { width, height } = el.getBoundingClientRect();
+    return [width / 2, height / 2];
+  }
+
+  function getEdgeProximity(el, x, y) {
+    const [cx, cy] = getCenterOfElement(el);
+    const dx = x - cx;
+    const dy = y - cy;
+    let kx = Infinity;
+    let ky = Infinity;
+    if (dx !== 0) kx = cx / Math.abs(dx);
+    if (dy !== 0) ky = cy / Math.abs(dy);
+    return Math.min(Math.max(1 / Math.min(kx, ky), 0), 1);
+  }
+
+  function getCursorAngle(el, x, y) {
+    const [cx, cy] = getCenterOfElement(el);
+    const dx = x - cx;
+    const dy = y - cy;
+    const radians = Math.atan2(dy, dx);
+    let degrees = radians * (180 / Math.PI) + 90;
+    if (degrees < 0) degrees += 360;
+    return degrees;
+  }
+
+  card.addEventListener('pointermove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const edge = getEdgeProximity(card, x, y);
+    const angle = getCursorAngle(card, x, y);
+
+    card.style.setProperty('--edge-proximity', `${(edge * 100).toFixed(3)}`);
+    card.style.setProperty('--cursor-angle', `${angle.toFixed(3)}deg`);
+  });
+}
+
+document.querySelectorAll('.border-glow-card').forEach(initBorderGlow);
+
+</script>
+
+<script>
+function goToSelectionPage(){
+    window.location.href = "selection card.html";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const profileCards = document.querySelectorAll(".profile-card, .card, .profile, .avatar-card");
+
+    profileCards.forEach(card => {
+        card.style.cursor = "pointer";
+        card.addEventListener("click", goToSelectionPage);
+    });
+
+    const buttons = document.querySelectorAll("button");
+    buttons.forEach(btn => {
+        const txt = btn.innerText.toLowerCase();
+        if(txt.includes("continue") || txt.includes("enter") || txt.includes("start")){
+            btn.addEventListener("click", goToSelectionPage);
+        }
+    });
+});
+</script>
+</body>
+
+</html>
