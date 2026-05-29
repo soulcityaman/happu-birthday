@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cutu Cinema</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&amp;family=Raleway:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <style>
+        :root { --wine: #5c1a2a; --cherry: #8b2252; --pink-glow: rgba(219,112,147,0.3); --glass: rgba(255,255,255,0.06); --glass-border: rgba(255,255,255,0.12); }
+        body { font-family: 'Raleway', sans-serif; overflow-x: hidden; background: #0a0a0a; }
+        h1,h2,h3 { font-family: 'Playfair Display', serif; }
+
+        .glass { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); }
+        .glass-strong { background: rgba(20,10,15,0.85); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border: 1px solid var(--glass-border); }
+
+        @keyframes ambientFloat { 0%,100%{ transform: translateY(0) scale(1); opacity:0.4; } 50%{ transform: translateY(-30px) scale(1.1); opacity:0.7; } }
+        @keyframes gradientShift { 0%{ background-position: 0% 50%; } 50%{ background-position: 100% 50%; } 100%{ background-position: 0% 50%; } }
+        .ambient-bg { background: linear-gradient(135deg, #0a0a0a, #1a0a12, #0a0a0a, #120a18); background-size: 400% 400%; animation: gradientShift 15s ease infinite; }
+
+        .particle { position: absolute; border-radius: 50%; pointer-events: none; animation: ambientFloat 6s ease-in-out infinite; }
+
+        .movie-card { transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s ease; transform-style: preserve-3d; }
+        .movie-card:hover { transform: scale(1.05) perspective(800px) rotateY(2deg) rotateX(-1deg); box-shadow: 0 20px 60px rgba(139,34,82,0.4), 0 0 40px var(--pink-glow); z-index: 10; }
+        .movie-card .card-video { opacity: 0; transition: opacity 0.5s ease; }
+        .movie-card:hover .card-video { opacity: 1; }
+        .movie-card .card-img { transition: opacity 0.5s ease; }
+        .movie-card:hover .card-img { opacity: 0; }
+
+        .scroll-row { scrollbar-width: none; -ms-overflow-style: none; }
+        .scroll-row::-webkit-scrollbar { display: none; }
+
+        .fade-in { opacity: 0; transform: translateY(30px); animation: fadeReveal 0.8s ease forwards; }
+        @keyframes fadeReveal { to { opacity:1; transform: translateY(0); } }
+
+        .player-overlay { opacity:0; pointer-events:none; transition: opacity 0.4s ease; }
+        .player-overlay.active { opacity:1; pointer-events:all; }
+
+        .glow-btn { position: relative; overflow: hidden; }
+        .glow-btn::after { content:''; position:absolute; inset:-2px; background: linear-gradient(135deg, var(--cherry), var(--pink-glow)); border-radius: inherit; opacity:0; transition: opacity 0.3s; z-index:-1; filter: blur(8px); }
+        .glow-btn:hover::after { opacity:1; }
+
+        input[type=range] { -webkit-appearance: none; background: rgba(255,255,255,0.2); border-radius: 4px; height: 4px; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width:14px; height:14px; border-radius:50%; background: #fff; cursor:pointer; box-shadow: 0 0 10px var(--pink-glow); }
+        
+        .spinner { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--cherry); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/resizing_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/telemetry_sdk.js"></script>
+ </head>
+ <body data-template-id="__page-root" class="ambient-bg min-h-screen text-white relative">
+  
+  <div id="particles" class="fixed inset-0 pointer-events-none z-0" aria-hidden="true"></div>
+
+  <header class="relative w-full h-[85vh]">
+   <div class="absolute inset-0 bg-[#140a0f]"></div>
+   <img data-template-id="hero-bg" src="IMG_0495.jpg" class="canva-image absolute inset-0 w-full h-full object-cover" loading="eager" alt="Hero Background">
+   <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/60 to-transparent"></div>
+   <div class="absolute inset-0 bg-gradient-to-r from-[#0a0a0a]/80 to-transparent"></div>
+   
+   <div class="relative z-10 flex flex-col justify-end h-full px-6 md:px-16 pb-20">
+    <div class="max-w-2xl fade-in">
+     <p data-template-id="hero-tag" class="canva-tag text-sm uppercase tracking-[0.3em] mb-4 text-pink-300/80">Featured Spotlight</p>
+     <h1 data-template-id="hero-title" class="canva-text text-5xl md:text-7xl font-bold leading-tight mb-4">challa tera aashak challa wala</h1>
+     <p data-template-id="hero-desc" class="canva-text text-lg text-white/70 mb-8 max-w-lg">pappi le gaya .</p>
+     <button data-template-id="hero-play-btn" class="canva-button glass glow-btn px-8 py-4 rounded-full text-white font-medium flex items-center gap-3 w-fit" onclick="openPlayer('8.mp4')"> 
+      <i data-lucide="play" class="w-5 h-5"></i> <span>Watch Now</span> 
+     </button>
+    </div>
+   </div>
+  </header>
+
+  <main class="relative z-10 px-6 md:px-16 -mt-10">
+   <section class="mb-16 fade-in" style="animation-delay:0.2s">
+    <h2 data-template-id="row1-title" class="canva-text text-2xl font-bold mb-6">Trending Previews</h2>
+    <div class="scroll-row flex gap-5 overflow-x-auto pb-4">
+     <div class="movie-card glass rounded-2xl overflow-hidden flex-shrink-0 w-56 md:w-64 aspect-[2/3] relative cursor-pointer" onclick="openPlayer('6.mp4')">
+      <img data-template-id="card-1" src="73ad600c-c147-4144-96fe-b63c295ecd8d.jpg" class="canva-image card-img absolute inset-0 w-full h-full object-cover" loading="lazy" alt="Movie 1">
+      <video class="card-video absolute inset-0 w-full h-full object-cover" muted loop playsinline preload="none" src="6.mp4"></video>
+     </div>
+     <div class="movie-card glass rounded-2xl overflow-hidden flex-shrink-0 w-56 md:w-64 aspect-[2/3] relative cursor-pointer" onclick="openPlayer('7.mp4')">
+      <img data-template-id="card-2" src="3EE3B769-8D1E-4B90-8114-5EAE658DF72D.jpg" class="canva-image card-img absolute inset-0 w-full h-full object-cover" loading="lazy" alt="Movie 2">
+      <video class="card-video absolute inset-0 w-full h-full object-cover" muted loop playsinline preload="none" src="7.mp4"></video>
+     </div>
+     <div class="movie-card glass rounded-2xl overflow-hidden flex-shrink-0 w-56 md:w-64 aspect-[2/3] relative cursor-pointer" onclick="openPlayer('8.mp4')">
+      <img data-template-id="card-3" src="IMG_0495.jpg" class="canva-image card-img absolute inset-0 w-full h-full object-cover" loading="lazy" alt="Movie 3">
+      <video class="card-video absolute inset-0 w-full h-full object-cover" muted loop playsinline preload="none" src="8.mp4"></video>
+     </div>
+     <div class="movie-card glass rounded-2xl overflow-hidden flex-shrink-0 w-56 md:w-64 aspect-[2/3] relative cursor-pointer" onclick="openPlayer('9.mp4')">
+      <img data-template-id="card-4" src="Tezza-1491.JPG" class="canva-image card-img absolute inset-0 w-full h-full object-cover" loading="lazy" alt="Movie 4">
+      <video class="card-video absolute inset-0 w-full h-full object-cover" muted loop playsinline preload="none" src="9.mp4"></video>
+     </div>
+     <div class="movie-card glass rounded-2xl overflow-hidden flex-shrink-0 w-56 md:w-64 aspect-[2/3] relative cursor-pointer" onclick="openPlayer('10.mp4')">
+      <img data-template-id="card-5" src="IMG_0251.JPG" class="canva-image card-img absolute inset-0 w-full h-full object-cover" loading="lazy" alt="Movie 5">
+      <video class="card-video absolute inset-0 w-full h-full object-cover" muted loop playsinline preload="none" src="10.mp4"></video>
+     </div>
+    </div>
+   </section>
+  </main>
+
+  <div id="player-overlay" class="player-overlay fixed inset-0 z-50 flex items-center justify-center p-4">
+   <div class="absolute inset-0 bg-black/95 backdrop-blur-xl" onclick="closePlayer()"></div>
+   
+   <div id="video-container" class="relative w-full max-w-5xl rounded-3xl overflow-hidden bg-black shadow-2xl" style="box-shadow: 0 0 80px rgba(139,34,82,0.5);">
+    
+    <video id="main-player" class="w-full aspect-video bg-black block" preload="metadata" playsinline onclick="togglePlay()"></video>
+    
+    <div id="player-loader" class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="absolute bottom-0 left-0 right-0 p-6 glass-strong rounded-b-3xl transform translate-y-0 transition-transform duration-300">
+     <div class="flex items-center gap-3 mb-3">
+         <input type="range" id="seek-bar" class="flex-1 cursor-pointer" min="0" max="100" value="0" aria-label="Seek">
+     </div>
+     <div class="flex items-center justify-between">
+      <div class="flex items-center gap-4">
+          <button onclick="skipPlayer(-10)" class="text-white/70 hover:text-white transition" aria-label="Rewind 10s"><i data-lucide="rewind" class="w-5 h-5"></i></button> 
+          <button id="play-pause-btn" onclick="togglePlay()" class="glass glow-btn w-12 h-12 rounded-full flex items-center justify-center" aria-label="Play/Pause">
+              <span id="play-btn-wrapper"><i data-lucide="play" class="w-5 h-5"></i></span>
+          </button> 
+          <button onclick="skipPlayer(10)" class="text-white/70 hover:text-white transition" aria-label="Forward 10s"><i data-lucide="fast-forward" class="w-5 h-5"></i></button>
+      </div>
+      <div class="flex items-center gap-4">
+       <div class="flex items-center gap-2">
+           <i data-lucide="volume-2" class="w-4 h-4 text-white/60"></i> 
+           <input type="range" id="vol-bar" class="w-20 cursor-pointer" min="0" max="100" value="80" aria-label="Volume">
+       </div>
+       <button onclick="toggleFullscreen()" class="text-white/70 hover:text-white transition" aria-label="Fullscreen"><i data-lucide="maximize" class="w-5 h-5"></i></button> 
+       <button onclick="closePlayer()" class="text-white/70 hover:text-white transition" aria-label="Close"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <script src="/_sdk/editing_sdk.js"></script>
+  <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // High-performance Particles Engine 
+        const pCont = document.getElementById('particles');
+        const fragment = document.createDocumentFragment();
+        for(let i=0; i<12; i++){
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const s = Math.random() * 4 + 2;
+            Object.assign(p.style, {
+                width: s + 'px',
+                height: s + 'px',
+                left: Math.random() * 100 + '%',
+                top: Math.random() * 100 + '%',
+                background: 'rgba(219,112,147,' + (0.2 + Math.random() * 0.3) + ')',
+                animationDelay: Math.random() * 6 + 's',
+                animationDuration: (5 + Math.random() * 5) + 's'
+            });
+            fragment.appendChild(p);
+        }
+        pCont.appendChild(fragment);
+
+        // Stabilized Preview-On-Hover logic 
+        document.querySelectorAll('.movie-card').forEach(card => {
+            const vid = card.querySelector('video');
+            if(!vid) return;
+
+            let playTimeout;
+            card.addEventListener('mouseenter', () => {
+                playTimeout = setTimeout(() => {
+                    vid.currentTime = 0;
+                    vid.play().catch(() => {});
+                }, 150);
+            });
+
+            card.addEventListener('mouseleave', () => {
+                clearTimeout(playTimeout);
+                vid.pause();
+            });
+        });
+
+        // Modular Central Video Player Logic
+        const overlay = document.getElementById('player-overlay');
+        const videoContainer = document.getElementById('video-container');
+        const player = document.getElementById('main-player');
+        const seekBar = document.getElementById('seek-bar');
+        const volBar = document.getElementById('vol-bar');
+        const playBtnWrapper = document.getElementById('play-btn-wrapper');
+        const inlineLoader = document.getElementById('player-loader');
+
+        function openPlayer(videoSrc) {
+            if (!videoSrc) return;
+            overlay.classList.add('active');
+            player.src = videoSrc;
+            player.load();
+            player.play()
+                .then(() => updatePlayIcon(true))
+                .catch(err => console.log("Autoplay context initialization notice: ", err));
+        }
+
+        function closePlayer() {
+            overlay.classList.remove('active');
+            player.pause();
+            player.src = ""; 
+            updatePlayIcon(false);
+            if (document.fullscreenElement) {
+                document.exitFullscreen?.().catch(()=>{});
+            }
+        }
+
+        function togglePlay() {
+            if (player.paused) {
+                player.play().catch(() => {});
+                updatePlayIcon(true);
+            } else {
+                player.pause();
+                updatePlayIcon(false);
+            }
+        }
+
+        function updatePlayIcon(isPlaying) {
+            if (isPlaying) {
+                playBtnWrapper.innerHTML = `<i data-lucide="pause" class="w-5 h-5"></i>`;
+            } else {
+                playBtnWrapper.innerHTML = `<i data-lucide="play" class="w-5 h-5"></i>`;
+            }
+            lucide.createIcons();
+        }
+
+        function skipPlayer(seconds) {
+            player.currentTime += seconds;
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                if (videoContainer.requestFullscreen) videoContainer.requestFullscreen();
+                else if (videoContainer.webkitRequestFullscreen) videoContainer.webkitRequestFullscreen();
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+            }
+        }
+
+        // Real-time Event Listeners
+        player.addEventListener('timeupdate', () => {
+            if(player.duration && !seekBar.matches(':active')) { 
+                seekBar.value = (player.currentTime / player.duration * 100); 
+            }
+        });
+
+        player.addEventListener('ended', () => {
+            updatePlayIcon(false);
+        });
+
+        seekBar.addEventListener('input', () => {
+            if(player.duration) {
+                player.currentTime = (seekBar.value / 100) * player.duration;
+            }
+        });
+
+        volBar.addEventListener('input', () => {
+            player.volume = volBar.value / 100;
+        });
+
+        player.addEventListener("waiting", () => {
+            inlineLoader.style.opacity = "1";
+        });
+
+        player.addEventListener("playing", () => {
+            inlineLoader.style.opacity = "0";
+            updatePlayIcon(true);
+        });
+
+        player.addEventListener("pause", () => {
+            updatePlayIcon(false);
+        });
+
+        player.addEventListener("canplay", () => {
+            inlineLoader.style.opacity = "0";
+        });
+
+        // Keybindings Handler
+        window.addEventListener('keydown', (e) => {
+            if (!overlay.classList.contains('active')) return;
+            
+            if (e.code === 'Space') {
+                e.preventDefault();
+                togglePlay();
+            } else if (e.code === 'ArrowRight') {
+                skipPlayer(10);
+            } else if (e.code === 'ArrowLeft') {
+                skipPlayer(-10);
+            } else if (e.code === 'Escape') {
+                closePlayer();
+            }
+        });
+  </script>
+ </body>
+</html>
