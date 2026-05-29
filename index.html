@@ -14,7 +14,6 @@
 
       html {
         height: 100%;
-        /* 🔹 Prevent page scroll on y-axis */
         overflow: hidden;
       }
 
@@ -25,22 +24,204 @@
         height: 100%;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           Oxygen, Ubuntu, Cantarell, sans-serif;
-        /* 🔹 Fallback background color with transition */
         background: radial-gradient(circle at top, #ffe6f0 0%, #f7d9e6 35%, #f2dfcc 100%);
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: align-items 0.25s ease, padding-top 0.25s ease, background 0.6s ease-in-out;
-        /* 🔹 No page scroll, only player scrolls */
+        transition: background 0.6s ease-in-out;
         overflow: hidden;
       }
 
-      /* A4 portrait ratio: 1 : 1.414 */
+      /* Master Premium Split Layout */
+      .app-layout {
+        display: flex;
+        width: 100%;
+        max-width: 1400px;
+        height: 90vh;
+        padding: 0 24px;
+        gap: 32px;
+        align-items: center;
+      }
+
+      /* Left Side: Playlist covering roughly 3/4 */
+      .playlist-side {
+        flex: 3;
+        height: 100%;
+        max-height: 594px; /* Matches the fixed strict A4 player heights */
+        display: flex;
+        flex-direction: column;
+        background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.12) 40%, rgba(255, 255, 255, 0.05) 100%);
+        backdrop-filter: blur(30px) saturate(140%);
+        -webkit-backdrop-filter: blur(30px) saturate(140%);
+        border-radius: 32px;
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        padding: 28px;
+        box-shadow: 0 22px 60px rgba(0, 0, 0, 0.12);
+      }
+
+      .playlist-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-shrink: 0;
+      }
+
+      .playlist-header h2 {
+        font-size: 22px;
+        font-weight: 700;
+        color: #5b1020;
+        margin: 0;
+        letter-spacing: -0.02em;
+      }
+
+      /* Premium Shuffle Button Interaction */
+      .premium-shuffle-btn {
+        border: none;
+        background: linear-gradient(135deg, rgba(215, 99, 137, 0.85) 0%, rgba(139, 30, 45, 0.9) 100%);
+        color: white;
+        padding: 10px 22px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 8px 20px rgba(139, 30, 45, 0.25);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .premium-shuffle-btn:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 12px 24px rgba(139, 30, 45, 0.35);
+        background: linear-gradient(135deg, rgba(215, 99, 137, 0.95) 0%, rgba(139, 30, 45, 1) 100%);
+      }
+
+      .premium-shuffle-btn:active {
+        transform: translateY(0) scale(0.98);
+      }
+
+      /* Hidden Scrollbar Container for Playlist Rows */
+      .playlist-menu {
+        flex: 1;
+        overflow-y: auto;
+        scrollbar-width: none;      /* Firefox */
+        -ms-overflow-style: none;   /* IE/Edge */
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-right: 2px;
+      }
+
+      .playlist-menu::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+      }
+
+      /* Premium iOS Style Song Item Card */
+      .song-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        background: rgba(255, 255, 255, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        border-radius: 18px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+      }
+
+      .song-item:hover {
+        background: rgba(255, 255, 255, 0.5);
+        transform: translateX(4px);
+        border-color: rgba(255, 190, 210, 0.6);
+      }
+
+      .song-item.is-active-track {
+        background: rgba(255, 255, 255, 0.6);
+        border-color: rgba(217, 99, 137, 0.6);
+        box-shadow: 0 8px 20px rgba(139, 30, 45, 0.05);
+      }
+
+      .song-item-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .song-item-art {
+        width: 46px;
+        height: 46px;
+        border-radius: 10px;
+        object-fit: cover;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      }
+
+      .song-item-details {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .song-item-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #5b1020;
+      }
+
+      .song-item-artist {
+        font-size: 12px;
+        color: #7b3b4f;
+        opacity: 0.8;
+      }
+
+      .song-item-controls {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .inline-play-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.9);
+        color: #8b1e2d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      }
+
+      .song-item:hover .inline-play-btn {
+        background: #8b1e2d;
+        color: white;
+      }
+
+      .song-item.is-active-track .inline-play-btn {
+        background: #8b1e2d;
+        color: white;
+      }
+
+      /* Right Side: Player covering exactly 1/4 */
+      .player-side {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      /* UNCHANGED ORIGINAL PLAYER MODULE HOOKS */
       main {
-        width: min(100%, 420px);
-        margin: 0 auto;
-        padding: 16px;
-        aspect-ratio: 1 / 1.414; /* width : height (A4 portrait) */
+        width: 420px;
+        padding: 0;
+        aspect-ratio: 1 / 1.414; 
         display: flex;
         align-items: center;
         justify-content: center;
@@ -48,7 +229,6 @@
       }
 
       .player-container {
-        /* 🔹 GLASS UI: iOS-style blur card */
         background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.15) 40%, rgba(255, 255, 255, 0.08) 100%);
         backdrop-filter: blur(25px) saturate(140%);
         -webkit-backdrop-filter: blur(25px) saturate(140%);
@@ -61,15 +241,11 @@
         height: 100%;
         display: flex;
         flex-direction: column;
-        /* 🔹 Scroll only inside the player */
         overflow-y: auto;
-
-        /* 🔹 Hide scrollbar but keep scrolling */
-        scrollbar-width: none;      /* Firefox */
-        -ms-overflow-style: none;   /* IE/Edge */
+        scrollbar-width: none;      
+        -ms-overflow-style: none;   
       }
 
-      /* Hide scrollbars for webkit browsers (Chrome/Edge/Opera/Safari) */
       .player-container::-webkit-scrollbar,
       .lyrics-section::-webkit-scrollbar,
       .why-section::-webkit-scrollbar {
@@ -77,7 +253,6 @@
         height: 0;
       }
 
-      /* Hide scrollbars for Firefox / old Edge on inner sections too */
       .lyrics-section,
       .why-section {
         scrollbar-width: none;
@@ -93,7 +268,6 @@
         font-weight: 600;
       }
 
-      /* Top row holding album art + title */
       .top-row {
         display: flex;
         flex-direction: column;
@@ -109,13 +283,11 @@
         box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
         position: relative;
         border: 2px solid rgba(255, 190, 210, 0.8);
-        flex-shrink: 0; /* never shrink album art */
+        flex-shrink: 0; 
         transition: width 0.25s ease, height 0.25s ease, border-radius 0.25s ease,
-          /* 🔹 For play/pause effect */
           transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
       }
 
-      /* 🔹 Album art play state effect */
       .album-art.is-playing {
         transform: scale(1.04);
         box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
@@ -157,7 +329,6 @@
         margin: 0;
       }
 
-      /* Toggles row */
       .toggles-row {
         display: flex;
         justify-content: center;
@@ -228,7 +399,6 @@
         transform: translateX(16px);
       }
 
-      /* Lyrics section */
       .lyrics-section {
         margin-top: 10px;
         padding: 10px 8px;
@@ -237,7 +407,7 @@
         border-radius: 16px;
         max-height: 150px;
         overflow-y: auto;
-        overflow-x: hidden; /* no horizontal scroll */
+        overflow-x: hidden; 
         text-align: left;
         flex-shrink: 0;
         border: 1px solid rgba(255, 255, 255, 0.3);
@@ -260,7 +430,6 @@
         position: relative;
       }
 
-      /* 🔹 Fade only when we want it (for synced lyrics) */
       .lyrics-container.synced-view {
         -webkit-mask-image: linear-gradient(
           to bottom,
@@ -309,7 +478,6 @@
         font-style: italic;
       }
 
-      /* Feels like us / you section */
       .why-section {
         margin-top: 8px;
         padding: 10px 10px 8px;
@@ -338,7 +506,6 @@
         word-wrap: break-word;
       }
 
-      /* Bottom controls pinned to bottom */
       .bottom-controls {
         margin-top: auto;
         flex-shrink: 0;
@@ -454,8 +621,7 @@
         display: none;
       }
 
-      /* -------------------- SHARED MAIN MODES (lyrics / feels) -------------------- */
-
+      /* LAYOUT MODES */
       body.lyrics-main-mode .player-container,
       body.feels-main-mode .player-container {
         text-align: left;
@@ -492,12 +658,11 @@
         font-size: 12px;
       }
 
-      /* Lyrics main mode (Apple-style) */
       body.lyrics-main-mode .lyrics-section {
         background: transparent;
         border-radius: 0;
         max-height: none;
-        flex: 1; /* take all middle space */
+        flex: 1; 
         margin-top: 18px;
         padding: 0;
         border: none;
@@ -523,7 +688,6 @@
         text-shadow: 0 0 14px rgba(255, 192, 203, 0.9);
       }
 
-      /* Feels main mode */
       body.feels-main-mode .lyrics-section {
         display: none !important;
       }
@@ -562,102 +726,118 @@
     </style>
   </head>
   <body>
-    <main>
-      <div class="player-container">
-        <h1></h1>
-
-        <div class="top-row">
-          <div class="album-art">
-            <img
-              id="albumArt"
-              src="1.jpg"
-              alt="Album artwork"
-              crossorigin="anonymous"
-            />
-          </div>
-
-          <div class="song-info">
-            <h2 class="song-title" id="songTitle">I Want To Hold Your Hand</h2>
-            <p class="song-artist" id="songArtist">The Beatles</p>
-          </div>
+    <div class="app-layout">
+      
+      <div class="playlist-side">
+        <div class="playlist-header">
+          <h2>Playlist Collection</h2>
+          <button class="premium-shuffle-btn" id="shuffleBtn">
+            <span>✦</span> Shuffle Play
+          </button>
         </div>
-
-        <div class="toggles-row">
-          <div class="toggle-wrapper">
-            <span class="toggle-label-text">Lyrics</span>
-            <label class="toggle">
-              <input type="checkbox" id="lyricsToggle" checked />
-              <span class="slider"></span>
-            </label>
+        <div class="playlist-menu" id="playlistMenuContainer">
           </div>
-          <div class="toggle-wrapper">
-            <span class="toggle-label-text">Feels like </span>
-            <label class="toggle">
-              <input type="checkbox" id="whyToggle" checked />
-              <span class="slider"></span>
-            </label>
-          </div>
-        </div>
-
-        <div class="lyrics-section" id="lyricsSection">
-          <div class="lyrics-title">Lyrics</div>
-          <div class="lyrics-container" id="lyricsContainer">
-            </div>
-        </div>
-
-        <div class="why-section" id="whySection">
-          <div class="why-title">Why it feels like us/you</div>
-          <p class="why-text" id="whyText">
-            Add your little note here about why this song feels like “us/you”.
-          </p>
-        </div>
-
-        <div class="bottom-controls">
-          <div class="progress-container">
-            <div class="progress-bar" id="progressBar">
-              <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <div class="time-display">
-              <span id="currentTime">0:00</span>
-              <span id="duration">0:00</span>
-            </div>
-          </div>
-
-          <div class="controls">
-            <button
-              class="control-btn prev-btn"
-              id="prevBtn"
-              aria-label="Previous song"
-            >
-              ‹
-            </button>
-            <button
-              class="control-btn play-btn"
-              id="playBtn"
-              aria-label="Play"
-            >
-              ►
-            </button>
-            <button
-              class="control-btn next-btn"
-              id="nextBtn"
-              aria-label="Next song"
-            >
-              ›
-            </button>
-          </div>
-
-          <p class="description"></p>
-
-          <div class="error-message" id="errorMessage">
-            Audio files not found. The player will show the song information, but
-            playback requires the audio files.
-          </div>
-        </div>
       </div>
 
-      <audio id="audioPlayer"></audio>
-    </main>
+      <div class="player-side">
+        <main>
+          <div class="player-container">
+            <h1></h1>
+
+            <div class="top-row">
+              <div class="album-art">
+                <img
+                  id="albumArt"
+                  src="1.jpg"
+                  alt="Album artwork"
+                  crossorigin="anonymous"
+                />
+              </div>
+
+              <div class="song-info">
+                <h2 class="song-title" id="songTitle">I Want To Hold Your Hand</h2>
+                <p class="song-artist" id="songArtist">The Beatles</p>
+              </div>
+            </div>
+
+            <div class="toggles-row">
+              <div class="toggle-wrapper">
+                <span class="toggle-label-text">Lyrics</span>
+                <label class="toggle">
+                  <input type="checkbox" id="lyricsToggle" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="toggle-wrapper">
+                <span class="toggle-label-text">Feels like </span>
+                <label class="toggle">
+                  <input type="checkbox" id="whyToggle" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="lyrics-section" id="lyricsSection">
+              <div class="lyrics-title">Lyrics</div>
+              <div class="lyrics-container" id="lyricsContainer"></div>
+            </div>
+
+            <div class="why-section" id="whySection">
+              <div class="why-title">Why it feels like us/you</div>
+              <p class="why-text" id="whyText">
+                Add your little note here about why this song feels like “us/you”.
+              </p>
+            </div>
+
+            <div class="bottom-controls">
+              <div class="progress-container">
+                <div class="progress-bar" id="progressBar">
+                  <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="time-display">
+                  <span id="currentTime">0:00</span>
+                  <span id="duration">0:00</span>
+                </div>
+              </div>
+
+              <div class="controls">
+                <button
+                  class="control-btn prev-btn"
+                  id="prevBtn"
+                  aria-label="Previous song"
+                >
+                  ‹
+                </button>
+                <button
+                  class="control-btn play-btn"
+                  id="playBtn"
+                  aria-label="Play"
+                >
+                  ►
+                </button>
+                <button
+                  class="control-btn next-btn"
+                  id="nextBtn"
+                  aria-label="Next song"
+                >
+                  ›
+                </button>
+              </div>
+
+              <p class="description"></p>
+
+              <div class="error-message" id="errorMessage">
+                Audio files not found. The player will show the song information, but
+                playback requires the audio files.
+              </div>
+            </div>
+          </div>
+
+          <audio id="audioPlayer"></audio>
+        </main>
+      </div>
+
+    </div>
 
     <script>
       /* -----------------------------
@@ -715,7 +895,7 @@
           title: "I Want To Hold Your Hand - Remastered 2015",
           artist: "The Beatles",
           src: "i-want-to-hold-your-hand-remastered-2015.mp3",
-          cover: "1.jpg", // 👈 album art
+          cover: "1.jpg", 
           synced: true,
           lyrics: [
             { time: 7.12, text: "Oh yeah, I'll tell you somethin'" },
@@ -1025,10 +1205,11 @@
       const albumArt = document.getElementById("albumArt");
       const whyText = document.getElementById("whyText");
       const albumArtWrapper = document.querySelector(".album-art");
+      const playlistMenuContainer = document.getElementById("playlistMenuContainer");
+      const shuffleBtn = document.getElementById("shuffleBtn");
 
-      // for crossfade
       let fadeInterval = null;
-      const FADE_DURATION = 600; // ms
+      const FADE_DURATION = 600; 
 
       function clearFade() {
         if (fadeInterval) {
@@ -1066,11 +1247,49 @@
         return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
       }
 
-      /* Render lyrics with support for both:
-         - synced: array of {time, text}
-         - synced: array of timestamped strings (auto-parsed)
-         - unsynced: array of plain strings
-      */
+      /* Dynamic UI Rendering Engine: Playlist Cards */
+      function renderPlaylistView() {
+        playlistMenuContainer.innerHTML = "";
+        playlist.forEach((track, idx) => {
+          const card = document.createElement("div");
+          card.className = `song-item ${idx === currentIndex ? 'is-active-track' : ''}`;
+          
+          const isCurrentPlaying = (idx === currentIndex && !audio.paused);
+          const iconState = isCurrentPlaying ? "❚❚" : "►";
+
+          card.innerHTML = `
+            <div class="song-item-left">
+              <img class="song-item-art" src="${track.cover || ''}" alt="Cover">
+              <div class="song-item-details">
+                <span class="song-item-title">${track.title}</span>
+                <span class="song-item-artist">${track.artist}</span>
+              </div>
+            </div>
+            <div class="song-item-controls">
+              <button class="inline-play-btn" data-index="${idx}">${iconState}</button>
+            </div>
+          `;
+
+          // Track Card selection maps seamlessly to contextual player sync
+          card.addEventListener("click", (e) => {
+            if(e.target.classList.contains('inline-play-btn')) {
+              e.stopPropagation();
+              if(idx === currentIndex) {
+                togglePlay();
+              } else {
+                crossfadeToSong(idx);
+              }
+            } else {
+              if(idx !== currentIndex) {
+                crossfadeToSong(idx);
+              }
+            }
+          });
+
+          playlistMenuContainer.appendChild(card);
+        });
+      }
+
       function renderLyrics() {
         lyricsContainer.innerHTML = "";
         const song = playlist[currentIndex];
@@ -1174,36 +1393,27 @@
         }
       }
 
-      /* 🔹 NEW: Dynamically extracts dominant colors from the thumbnail to build a matching gradient */
       function updateAdaptiveBackground(imgElement) {
-        // Create an in-memory canvas to read image pixels
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
         
-        // Wait until image is loaded to extract pixels safely
         if (!imgElement.complete) {
           imgElement.addEventListener('load', () => updateAdaptiveBackground(imgElement), { once: true });
           return;
         }
 
         try {
-          // Scale down image inside canvas to make parsing incredibly fast
           canvas.width = 10;
           canvas.height = 10;
           ctx.drawImage(imgElement, 0, 0, 10, 10);
           
           const imgData = ctx.getImageData(0, 0, 10, 10).data;
-          
-          // Sample a few distinct coordinates for top/center/bottom feel
-          // 4 pieces of data per pixel (R, G, B, A)
           const formatRGB = (offset) => `rgb(${imgData[offset]}, ${imgData[offset+1]}, ${imgData[offset+2]})`;
           
-          // Select corner and center points for smooth color mixing
-          const colorTop = formatRGB(0);       // Top Left
-          const colorMiddle = formatRGB(180);  // Center area 
-          const colorBottom = formatRGB(360);  // Lower area
+          const colorTop = formatRGB(0);       
+          const colorMiddle = formatRGB(180);  
+          const colorBottom = formatRGB(360);  
 
-          // Apply gorgeous matching ambient gradient directly to body
           document.body.style.background = `radial-gradient(circle at top, ${colorTop} 0%, ${colorMiddle} 50%, ${colorBottom} 100%)`;
         } catch (e) {
           console.warn("Could not extract image colors due to security/cross-origin constraints. Using aesthetic fallback gradient.", e);
@@ -1219,13 +1429,10 @@
         songArtist.textContent = song.artist;
         audio.src = song.src;
 
-        // DIRECT assignment of album art
         if (song.cover) {
           albumArt.src = song.cover;
           albumArt.alt = "Album art";
           albumArt.style.background = "";
-          
-          // 🔹 Fire dynamic background calculation on image update
           updateAdaptiveBackground(albumArt);
         } else {
           albumArt.src = "";
@@ -1240,6 +1447,7 @@
         errorMessage.style.display = "none";
 
         renderLyrics();
+        renderPlaylistView();
         lyricsContainer.scrollTop = 0;
 
         const feeling =
@@ -1259,9 +1467,11 @@
             .then(() => {
               fadeAudio(1, FADE_DURATION);
               playBtn.textContent = "❚❚";
+              renderPlaylistView();
             })
             .catch(() => {
               playBtn.textContent = "►";
+              renderPlaylistView();
             });
         });
       }
@@ -1274,17 +1484,20 @@
             .then(() => {
               fadeAudio(1, 300);
               playBtn.textContent = "❚❚";
+              renderPlaylistView();
             })
             .catch((error) => {
               console.error("Playback failed:", error);
               errorMessage.style.display = "block";
               playBtn.textContent = "►";
+              renderPlaylistView();
             });
         } else {
           fadeAudio(0, 250, () => {
             audio.pause();
             audio.volume = 1;
             playBtn.textContent = "►";
+            renderPlaylistView();
           });
         }
       }
@@ -1298,6 +1511,16 @@
         const prevIndex = (currentIndex - 1 + playlist.length) % playlist.length;
         crossfadeToSong(prevIndex);
       }
+
+      /* Premium Seeded Shuffle Engine */
+      shuffleBtn.addEventListener("click", () => {
+        if (playlist.length <= 1) return;
+        let nextShuffleIdx = currentIndex;
+        while (nextShuffleIdx === currentIndex) {
+          nextShuffleIdx = Math.floor(Math.random() * playlist.length);
+        }
+        crossfadeToSong(nextShuffleIdx);
+      });
 
       playBtn.addEventListener("click", togglePlay);
       nextBtn.addEventListener("click", playNext);
@@ -1314,7 +1537,6 @@
         }
 
         currentTimeEl.textContent = formatTime(currentTime);
-
         highlightCurrentLyric(currentTime);
       });
 
@@ -1328,12 +1550,14 @@
         if (audio.paused) {
           playBtn.textContent = "►";
           albumArtWrapper.classList.remove("is-playing");
+          renderPlaylistView();
         }
       });
 
       audio.addEventListener("play", () => {
         playBtn.textContent = "❚❚";
         albumArtWrapper.classList.add("is-playing");
+        renderPlaylistView();
       });
 
       progressBar.addEventListener("click", (e) => {
@@ -1349,45 +1573,8 @@
       lyricsToggle.addEventListener("change", updateLayoutMode);
       whyToggle.addEventListener("change", updateLayoutMode);
 
-      // Load first song on page load
       loadSong(0);
       audio.volume = 1;
-    </script>
-
-    <script>
-      (function () {
-        function c() {
-          var b = a.contentDocument || a.contentWindow.document;
-          if (b) {
-            var d = b.createElement("script");
-            d.innerHTML =
-              "window.__CF$cv$params={r:'9a7403c27398b2c8',t:'MTc2NDYwNzEwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
-            b.getElementsByTagName("head")[0].appendChild(d);
-          }
-        }
-        if (document.body) {
-          var a = document.createElement("iframe");
-          a.height = 1;
-          a.width = 1;
-          a.style.position = "absolute";
-          a.style.top = 0;
-          a.style.left = 0;
-          a.style.border = "none";
-          a.style.visibility = "hidden";
-          document.body.appendChild(a);
-          if ("loading" !== document.readyState) c();
-          else if (window.addEventListener)
-            document.addEventListener("DOMContentLoaded", c);
-          else {
-            var e = document.onreadystatechange || function () {};
-            document.onreadystatechange = function (b) {
-              e(b);
-              "loading" !== document.readyState &&
-                ((document.onreadystatechange = e), c());
-            };
-          }
-        }
-      })();
     </script>
   </body>
 </html>
